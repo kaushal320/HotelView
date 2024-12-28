@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Website{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'bulmaCSS/bulma.min.css' %}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar has-shadow">
+        <!--logo-->
+        <div class="navbar-brand">
+            <a class="navbar-item">
+                HotelView
+            </a>
+            <a class="navbar-burger"id="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                
+            </a>
+        </div>
+        
+        <div class="navbar-menu" id="nav-links">
+            <div class="navbar-end">  
+                <a  class="navbar-item">Home</a>
+                <a  class="navbar-item">About</a>
+                <a  class="navbar-item">Contact Us</a>
+                <a  class="navbar-item">Log In</a>
+                <a  class="navbar-item">Book Now</a>
+               
+               
+                
+            </div>
+        </div>
+    </nav>
+    <!-- Content Section -->
+    <div>
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="{%static'javascripts/main.js'%}"></script>
+</body>
+</html>
