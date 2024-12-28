@@ -1,0 +1,33 @@
+#navbarColor {
+    background-color: #44413E;
+  }
+  
+  .navbar-item {
+    position: relative;
+    text-decoration: none;
+    padding-bottom: 5px; /* Space for the line */
+    transition: color 0.3s ease;
+  }
+  
+  .navbar-item:hover {
+    background-color: #44413E;
+    color: #ffffff; /* Change text color on hover */
+  }
+  
+  .navbar-item::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: #ffffff; /* White line color */
+    transition: width 0.3s ease, left 0.3s ease;
+    transform: translateX(20%); /* Center the line */
+  }
+  
+  .navbar-item:hover::after {
+    width: 70%; /* Expands the line to full width */
+    left: 0; /* Move the line from the center to the left edge */
+  }
+  
