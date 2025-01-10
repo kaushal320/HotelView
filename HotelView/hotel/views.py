@@ -2,21 +2,21 @@ from django.shortcuts import render
 
 # Create your views here.
 
-def index(request):
-    return render(request,'index.html')
+def home(request):
+    return render(request, 'index.html')
 
 
 def about(request):
-    return render(request,'aboutUs.html')
+    return render(request, 'about.html')
 
 
 def contact(request):
-    return render(request,'contact.html')
-
-
-def booking(request):
-    return render(request,'booking.html')
+    return render(request, 'contact.html')
 
 
 def login(request):
-    return render(request,'login.html')
+    return render(request, 'login.html')
+
+
+def book(request):
+    return render(request, 'book.html')

@@ -40,7 +40,48 @@
         {% block content %}{% endblock %}
     </div>
 
-    <script src="{% static 'javascripts/main.js' %}"></script>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>HMS</h3>
+                <div class="connect-with-us">
+                    <h4>Connect with Us</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>HMS Nepal</p>
+                <p>+977 9860000000</p>
+            </div>
+            <div class="footer-section">
+                <h4>Subscribe Us</h4>
+                <p>Sign up for special offers</p>
+                <div class="subscribe-form">
+                    <input type="email" placeholder="Enter your email">
+                    <button type="submit">→</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-links">
+                <a href="#">Home</a>
+                <a href="#">About</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Log In</a>
+                <a href="#">Book Now</a>
+            </div>
+            <p>Copyright 2024 by HMS</p>
+        </div>
+    </footer>
 
+    <!-- Add Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="{% static 'javascripts/main.js' %}"></script>
 </body>
 </html>
