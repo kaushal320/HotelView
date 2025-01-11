@@ -388,14 +388,14 @@
 .service-number {
     font-size: 3rem;
     font-weight: bold;
-    color: #ffffff;
+    color: #ffe030;
     margin-bottom: 10px;
 }
 
 .service-title {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #333;
+    color: #ffffff;
     margin-bottom: 10px;
 }
 
