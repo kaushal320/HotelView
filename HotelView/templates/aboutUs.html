@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}About Us{% endblock %}
+
+
+
+{% block content %}
+<div id="rooms-section">
+    <h2 class="rooms-title">ROOMS & SUITES</h2>
+    <div class="rooms-grid">
+        <div class="room-card">
+            <img src="{% static 'images/double room.jpg' %}" alt="Double Room">
+            <div class="room-name">Double Room</div>
+        </div>
+        <div class="room-card">
+            <img src="{% static 'images/luxury room.jpg' %}" alt="Luxury Room">
+            <div class="room-name">Luxury Room</div>
+        </div>
+        <div class="room-card">
+            <img src="{% static 'images/family room.jpg' %}" alt="Family Room">
+            <div class="room-name">Family Room</div>
+        </div>
+        <div class="room-card">
+            <img src="{% static 'images/small room.jpg' %}" alt="Small Room">
+            <div class="room-name">Small Room</div>
+        </div>
+        <div class="room-card">
+            <img src="{% static 'images/Apartment.jpeg' %}" alt="Deluxe Room">
+            <div class="room-name">Apartment</div>
+        </div>
+        <div class="room-card">
+            <img src="{% static 'images/Theater room.jpg' %}" alt="Suite Room">
+            <div class="room-name">Theater Room</div>
+        </div>
+    </div>
+    <br><br>
+    <h2 class="rooms-title pt-3">Services</h2>
+    <div class="columns is-multiline">
+    <div class="services-grid">
+        <div class="service-card">
+            <h3 class="service-number">1</h3>
+            <h4 class="service-title">Swimming Pool</h4>
+            <p class="service-description">
+                A hotel swimming pool provides a relaxing space for guests, often with loungers, scenic views, and amenities like temperature control or kids' areas. Perfect for leisure and recreation.
+            </p>
+        </div>
+        <div class="service-card">
+            <h3 class="service-number">2</h3>
+            <h4 class="service-title">Meeting Area</h4>
+            <p class="service-description">
+                A hotel meeting hall offers a professional space for conferences, seminars, and events, equipped with modern amenities like AV systems, comfortable seating, and flexible layouts. Ideal for business and social gatherings.
+            </p>
+        </div>
+        <div class="service-card">
+            <h3 class="service-number">3</h3>
+            <h4 class="service-title">Mini Club</h4>
+            <p class="service-description">
+                A hotel mini club is a dedicated space for kids, offering fun activities, games, and supervised entertainment. It’s designed to keep children engaged while parents relax, ensuring a family-friendly experience.
+            </p>
+        </div>
+        <div class="service-card">
+            <h3 class="service-number">4</h3>
+            <h4 class="service-title">Indoor Gym</h4>
+            <p class="service-description">
+                A hotel indoor gym provides a well-equipped space for fitness enthusiasts, featuring modern exercise machines, weights, and sometimes personal training options. Perfect for staying active during your stay.
+            </p>
+        </div>
+    </div>
+    <br><br>
+    </div>
+    
+    
+
+
+
+   
+{% endblock %}
