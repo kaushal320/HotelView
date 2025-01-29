@@ -26,11 +26,11 @@
     
         <div class="navbar-menu" id="nav-links">
             <div class="navbar-end">
-                <a class="navbar-item has-text-white">Home</a>
-                <a class="navbar-item has-text-white">About</a>
-                <a class="navbar-item has-text-white">Contact Us</a>
-                <a class="navbar-item has-text-white">Log In</a>
-                <a class="navbar-item has-text-white">Book Now</a>
+                <a href="{% url 'hotel:home' %}" class="navbar-item has-text-white">Home</a>
+                <a href="{% url 'hotel:about' %}"  class="navbar-item has-text-white">About</a>
+                <a href="{% url 'hotel:contact' %}"  class="navbar-item has-text-white">Contact Us</a>
+                <a href="#"  class="navbar-item has-text-white">Log In</a>
+                <a href="#" class="navbar-item has-text-white">Book Now</a>
             </div>
         </div>
     </nav>
