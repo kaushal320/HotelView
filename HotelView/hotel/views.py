@@ -42,7 +42,7 @@ def login_view(request):
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, f'Welcome back, {user.first_name}!')
+            messages.success(request, f'Welcome, {user.first_name}!')
             return redirect('hotel:home')
         else:
             messages.error(request, 'Invalid email or password.')
