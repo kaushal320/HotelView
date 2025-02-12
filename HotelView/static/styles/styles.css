@@ -389,7 +389,7 @@
 .service-number {
     font-size: 3rem;
     font-weight: bold;
-    color: #ffe030;
+    color: #C19B76;
     margin-bottom: 10px;
 }
 
@@ -650,39 +650,3 @@
   }
 }
 
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding: 20px 0;
-}
-
-.service-card {
-  background: #1A1A1A;
-  border: 1px solid #424242;
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-  color: #ffffff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.service-number {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #ffe030;
-  margin-bottom: 10px;
-}
-
-.service-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #ffffff;
-  margin-bottom: 10px;
-}
-
-.service-description {
-  font-size: 1rem;
-  color: #ffffff;
-  line-height: 1.5;
-}
