@@ -326,14 +326,14 @@
     align-self: flex-start;
   }
 
-  .image-large {
-    width: 250px;
+  .image-large { 
+    width: 400px;
     height: 250px;
     border-radius: 20px;
     object-fit: cover;
     align-self: flex-end;
   }
-
+ 
   @media (max-width: 1024px) {
     .hotel-info-section {
         padding: 3rem 2rem;
@@ -518,7 +518,7 @@
 }
 
 .contact-background {
-  background-image: url('../images/contact-bg.jpg');
+  background-image: url('../images/contact us.jpg');
   background-size: cover;
   background-position: center;
   height: 50vh;
@@ -570,13 +570,16 @@
 
 .info-box {
   background-color: #333;
-  padding: 2rem;
-  display: flex;
+  padding: 1rem 1.5rem; /* Reduce padding to make it smaller */
+  display: inline-flex; /* Use inline-flex to make it only as big as the content */
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem; /* Reduce gap between items */
   color: white;
   border-radius: 4px;
+  max-width: 300px; /* Limit the width */
+  text-align: center;
 }
+
 
 .info-box i {
   font-size: 1.2rem;
