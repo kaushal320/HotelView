@@ -653,3 +653,221 @@
   }
 }
 
+/* Authentication Pages Styles */
+.login-section {
+    background-image: url('../images/login image.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: calc(100vh - 52px);
+    padding: 3rem 1.5rem;
+    position: relative;
+    display: flex;
+    align-items: center;  /* Center vertically */
+    justify-content: center;  /* Center horizontally */
+}
+
+.login-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6); /* Darker overlay */
+    z-index: 1;
+}
+
+.login-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+.login-box {
+    background-color: rgba(68, 65, 62, 0.95); /* Using your theme color #44413E */
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.login-box:hover {
+    transform: translateY(-5px);
+}
+
+.login-box .title {
+    color: #ffffff;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+}
+
+.login-box .label {
+    color: #ffffff;
+}
+
+.login-box .input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    transition: border-color 0.3s ease;
+}
+
+.login-box .input:focus {
+    border-color: #b38b59;
+    box-shadow: 0 0 0 2px rgba(179, 139, 89, 0.2);
+}
+
+.login-box .input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.login-box .button.is-primary {
+    background-color: #b38b59;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+.login-box .button.is-primary:hover {
+    background-color: #96744b;
+}
+
+.login-box .checkbox {
+    color: #ffffff;
+}
+
+.login-box .has-text-primary {
+    color: #b38b59 !important;
+}
+
+.login-box .has-text-primary:hover {
+    color: #96744b !important;
+    text-decoration: underline;
+}
+
+.login-box p {
+    color: #ffffff;
+}
+
+/* Message alerts */
+.message {
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.message.is-danger {
+    background-color: rgba(204, 15, 53, 0.2);
+    color: #ff8fa3;
+}
+
+.message.is-success {
+    background-color: rgba(37, 121, 66, 0.2);
+    color: #81e6a5;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .login-section {
+        padding: 2rem 1rem;
+    }
+    
+    .login-box {
+        padding: 1.5rem;
+    }
+    
+    .login-box .title {
+        font-size: 1.5rem;
+    }
+}
+
+/* Register page specific styles */
+.register-section {
+    background-image: url('../images/login image.jpg'); /* Using the same image as login */
+}
+
+/* Add these styles to your existing navbar styles */
+.navbar-dropdown {
+    background-color: #44413E;
+    border-top: 2px solid #b38b59;
+}
+
+.navbar-dropdown .navbar-item {
+    color: white;
+}
+
+.navbar-dropdown .navbar-item:hover {
+    background-color: #2c2a28;
+    color: #b38b59;
+}
+
+.navbar-link:not(.is-arrowless)::after {
+    border-color: white;
+}
+
+.navbar-link:hover {
+    background-color: #44413E !important;
+}
+
+/* Message styles for success/error notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 1rem 2.5rem 1rem 1.5rem; /* Added more padding on right for close button */
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    animation: slideIn 0.5s ease-out;
+    max-width: 300px;
+}
+
+.notification .delete {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.notification .delete:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Style for the navbar icons */
+.navbar-link .icon,
+.navbar-item .icon {
+    margin-right: 0.5rem;
+}
+
+.navbar-dropdown .navbar-item {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-dropdown .navbar-item .icon {
+    margin-right: 0.5rem;
+}
+
+.notification.is-success {
+    background-color: #48c774;
+    color: white;
+}
+
+.notification.is-danger {
+    background-color: #f14668;
+    color: white;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+

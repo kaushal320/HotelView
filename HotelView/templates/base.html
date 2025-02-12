@@ -29,11 +29,48 @@
                 <a href="{% url 'hotel:home' %}" class="navbar-item has-text-white">Home</a>
                 <a href="{% url 'hotel:about' %}"  class="navbar-item has-text-white">About</a>
                 <a href="{% url 'hotel:contact' %}"  class="navbar-item has-text-white">Contact Us</a>
-                <a href="#"  class="navbar-item has-text-white">Log In</a>
                 <a href="#" class="navbar-item has-text-white">Book Now</a>
+                
+                {% if user.is_authenticated %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link has-text-white">
+                            <span class="icon">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <span>{{ user.first_name }}</span>
+                        </a>
+                        <div class="navbar-dropdown">
+                            <a href="{% url 'hotel:logout' %}" class="navbar-item">
+                                <span class="icon">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </span>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'hotel:login' %}" class="navbar-item has-text-white">
+                        <span class="icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </span>
+                        <span>Log In</span>
+                    </a>
+                {% endif %}
+                
+               
             </div>
         </div>
     </nav>
+    
+    <!-- Add this right after the nav element -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="notification is-{{ message.tags }}">
+                <button class="delete"></button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
     
     <!-- Content Section -->
     <div>
@@ -83,5 +120,17 @@
     <!-- Add Font Awesome for social icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="{% static 'javascripts/main.js' %}"></script>
+    <script>
+        // Close notification when clicking the delete button
+        document.addEventListener('DOMContentLoaded', () => {
+            (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+                const $notification = $delete.parentNode;
+
+                $delete.addEventListener('click', () => {
+                    $notification.parentNode.removeChild($notification);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
