@@ -17,7 +17,7 @@
             <!-- Theater Room -->
             <div class="room-booking-card">
                 <div class="room-image">
-                    <img src="{% static 'images/theater room.jpg' %}" alt="Theater Room">
+                    <img src="{% static 'images/theater-room.jpg' %}" alt="Theater Room">
                     <div class="room-rating">
                         <span class="stars">★★★★★</span>
                     </div>
@@ -32,7 +32,7 @@
                         <span class="price">$250</span>
                         <span class="per-night">per night</span>
                     </div>
-                    <button class="button is-primary book-button">Book Now</button>
+                    <button class="button is-primary book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Theater Room'">Book Now</button>
                 </div>
             </div>
 
@@ -54,7 +54,7 @@
                         <span class="price">$400</span>
                         <span class="per-night">per night</span>
                     </div>
-                    <button class="button is-primary book-button">Book Now</button>
+                    <button class="button is-primary book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Apartment'">Book Now</button>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
             <!-- Family Room -->
             <div class="room-booking-card">
                 <div class="room-image">
-                    <img src="{% static 'images/family room.jpg' %}" alt="Family Room">
+                    <img src="{% static 'images/family-room.jpg' %}" alt="Family Room">
                     <div class="room-rating">
                         <span class="stars">★★★★★</span>
                     </div>
@@ -79,14 +79,14 @@
                         <span class="price">$200</span>
                         <span class="per-night">per night</span>
                     </div>
-                    <button class="button book-button">BOOK NOW</button>
+                    <button class="button book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Family Room'">BOOK NOW</button>
                 </div>
             </div>
 
             <!-- Double Room -->
             <div class="room-booking-card">
                 <div class="room-image">
-                    <img src="{% static 'images/double room.jpg' %}" alt="Double Room">
+                    <img src="{% static 'images/double-room.jpg' %}" alt="Double Room">
                     <div class="room-rating">
                         <span class="stars">★★★★☆</span>
                     </div>
@@ -101,14 +101,14 @@
                         <span class="price">$150</span>
                         <span class="per-night">per night</span>
                     </div>
-                    <button class="button is-primary book-button">Book Now</button>
+                    <button class="button is-primary book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Double Room'">Book Now</button>
                 </div>
             </div>
 
             <!-- Small Room -->
             <div class="room-booking-card">
                 <div class="room-image">
-                    <img src="{% static 'images/small room.jpg' %}" alt="Small Room">
+                    <img src="{% static 'images/small-room.jpg' %}" alt="Small Room">
                     <div class="room-rating">
                         <span class="stars">★★★★☆</span>
                     </div>
@@ -123,14 +123,14 @@
                         <span class="price">$100</span>
                         <span class="per-night">per night</span>
                     </div>
-                    <button class="button is-primary book-button">Book Now</button>
+                    <button class="button is-primary book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Small Room'">Book Now</button>
                 </div>
             </div>
 
             <!-- Luxury Room -->
             <div class="room-booking-card">
                 <div class="room-image">
-                    <img src="{% static 'images/luxury room.jpg' %}" alt="Luxury Room">
+                    <img src="{% static 'images/luxury-room.jpg' %}" alt="Luxury Room">
                     <div class="room-rating">
                         <span class="stars">★★★★★</span>
                     </div>
@@ -145,7 +145,7 @@
                         <span class="price">$300</span>
                         <span class="per-night">per night</span>
                     </div>
-                    <button class="button is-primary book-button">Book Now</button>
+                    <button class="button is-primary book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Luxury Room'">Book Now</button>
                 </div>
             </div>
         </div>

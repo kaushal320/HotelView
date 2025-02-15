@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Complete Your Booking - HotelView{% endblock %}
+
+{% block content %}
+<section class="booking-form-section">
+    <div class="booking-form-container">
+        <div class="room-preview">
+            <div class="room-image">
+                <img src="{% static room_image %}" alt="{{ room_type }}">
+                <div class="room-rating">
+                    <span class="stars">{{ room_rating }}</span>
+                </div>
+            </div>
+            <div class="booking-details">
+                <h3>{{ room_type }}</h3>
+                <div class="reservation-info">
+                    <div class="date-box">
+                        <h4>CHECK-IN</h4>
+                        <div class="date">
+                            <span class="day">{{ check_in_day }}</span>
+                            <div class="date-details">
+                                <span class="month">{{ check_in_month }}</span>
+                                <span class="weekday">{{ check_in_weekday }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="date-box">
+                        <h4>CHECK-OUT</h4>
+                        <div class="date">
+                            <span class="day">{{ check_out_day }}</span>
+                            <div class="date-details">
+                                <span class="month">{{ check_out_month }}</span>
+                                <span class="weekday">{{ check_out_weekday }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="booking-counters">
+                    <div class="counter-box">
+                        <span>GUESTS</span>
+                        <div class="counter">
+                            <button class="decrease">-</button>
+                            <span class="count">1</span>
+                            <button class="increase">+</button>
+                        </div>
+                    </div>
+                    <div class="counter-box">
+                        <span>NIGHTS</span>
+                        <div class="counter">
+                            <button class="decrease">-</button>
+                            <span class="count">1</span>
+                            <button class="increase">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="price-display">
+                    <span class="total-price">RS. 4,000/-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="guest-form">
+            <h2>Add Your Information</h2>
+            <form id="bookingForm" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Name*</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="surname">Surname*</label>
+                    <input type="text" id="surname" name="surname" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email*</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address*</label>
+                    <input type="text" id="address" name="address" required>
+                </div>
+                <div class="form-group">
+                    <label for="arrival">Arrival*</label>
+                    <input type="datetime-local" id="arrival" name="arrival" required>
+                </div>
+                <div class="form-group terms">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">Terms and Conditions*</label>
+                </div>
+                <button type="submit" class="book-it-button">Book It!</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %} 

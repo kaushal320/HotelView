@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
+from django.templatetags.static import static
 
 # Create your views here.
 
@@ -106,3 +107,45 @@ def logout_view(request):
 def book(request):
     page = request.GET.get('page')
     return render(request, 'book.html', {'page': page})
+
+def booking_form(request):
+    room_type = request.GET.get('room_type', 'Standard Room')
+    
+    # Map room types to their image paths
+    room_images = {
+        'Theater Room': 'images/theater-room.jpg',
+        'Apartment': 'images/apartment.jpg',
+        'Family Room': 'images/family-room.jpg',
+        'Double Room': 'images/double-room.jpg',
+        'Small Room': 'images/small-room.jpg',
+        'Luxury Room': 'images/luxury-room.jpg'
+    }
+    
+    # Get the corresponding image path for the room type
+    room_image = room_images.get(room_type, 'images/default-room.jpg')
+    
+    # Map room types to their ratings
+    room_ratings = {
+        'Theater Room': '★★★★★',
+        'Apartment': '★★★★★',
+        'Family Room': '★★★★★',
+        'Double Room': '★★★★☆',
+        'Small Room': '★★★★☆',
+        'Luxury Room': '★★★★★'
+    }
+    
+    # Get the corresponding rating for the room type
+    room_rating = room_ratings.get(room_type, '★★★★☆')
+    
+    context = {
+        'room_type': room_type,
+        'room_image': room_image,
+        'room_rating': room_rating,
+        'check_in_day': '16',
+        'check_in_month': 'Dec, 2024',
+        'check_in_weekday': 'TUESDAY',
+        'check_out_day': '16',
+        'check_out_month': 'Dec, 2024',
+        'check_out_weekday': 'TUESDAY',
+    }
+    return render(request, 'booking_form.html', context)

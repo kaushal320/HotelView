@@ -1127,3 +1127,204 @@
       }
   }
 
+  /* Booking Form Styles */
+  .booking-form-section {
+      background-color: #1a1a1a;
+      min-height: 100vh;
+      padding: 4rem 2rem;
+  }
+
+  .booking-form-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      background-color: #262626;
+      padding: 2rem;
+      border-radius: 8px;
+  }
+
+  .room-preview {
+      background-color: #333;
+      border-radius: 8px;
+      overflow: hidden;
+  }
+
+  .room-image {
+      position: relative;
+      height: 200px;
+  }
+
+  .room-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+  }
+
+  .booking-details {
+      padding: 1.5rem;
+      color: white;
+  }
+
+  .booking-details h3 {
+      color: #b38b59;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+  }
+
+  .reservation-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+  }
+
+  .date-box {
+      background-color: #262626;
+      padding: 1rem;
+      border-radius: 4px;
+      text-align: center;
+      flex: 1;
+      margin: 0 0.5rem;
+  }
+
+  .date-box h4 {
+      color: #b38b59;
+      margin-bottom: 0.5rem;
+  }
+
+  .date {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+
+  .day {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-right: 0.5rem;
+  }
+
+  .date-details {
+      text-align: left;
+  }
+
+  .booking-counters {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+  }
+
+  .counter-box {
+      background-color: #262626;
+      padding: 1rem;
+      border-radius: 4px;
+      flex: 1;
+      margin: 0 0.5rem;
+  }
+
+  .counter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+  }
+
+  .counter button {
+      background-color: #b38b59;
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      cursor: pointer;
+  }
+
+  .counter button:hover {
+      background-color: #96744b;
+  }
+
+  .guest-form {
+      background-color: #333;
+      padding: 2rem;
+      border-radius: 8px;
+  }
+
+  .guest-form h2 {
+      color: #b38b59;
+      margin-bottom: 2rem;
+  }
+
+  .form-group {
+      margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+      display: block;
+      color: white;
+      margin-bottom: 0.5rem;
+  }
+
+  .form-group input {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: #262626;
+      border: 1px solid #b38b59;
+      border-radius: 4px;
+      color: white;
+  }
+
+  .terms {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+  }
+
+  .terms input {
+      width: auto;
+  }
+
+  .book-it-button {
+      width: 100%;
+      padding: 1rem;
+      background-color: #b38b59;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background-color 0.3s ease;
+  }
+
+  .book-it-button:hover {
+      background-color: #96744b;
+  }
+
+  .price-display {
+      text-align: center;
+      margin-top: 1rem;
+  }
+
+  .total-price {
+      font-size: 1.5rem;
+      color: #b38b59;
+      font-weight: bold;
+  }
+
+  @media (max-width: 768px) {
+      .booking-form-container {
+          grid-template-columns: 1fr;
+      }
+      
+      .reservation-info,
+      .booking-counters {
+          flex-direction: column;
+          gap: 1rem;
+      }
+      
+      .date-box,
+      .counter-box {
+          margin: 0;
+      }
+  }
+
