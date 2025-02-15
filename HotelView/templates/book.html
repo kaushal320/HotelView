@@ -12,9 +12,9 @@
 
     <div class="container">
         {% if page == '2' %}
-        <!-- Page 2 Content -->
+        
         <div class="rooms-grid">
-            <!-- Theater Room -->
+            
             <div class="room-booking-card">
                 <div class="room-image">
                     <img src="{% static 'images/theater-room.jpg' %}" alt="Theater Room">
@@ -36,7 +36,7 @@
                 </div>
             </div>
 
-            <!-- Apartment -->
+            
             <div class="room-booking-card">
                 <div class="room-image">
                     <img src="{% static 'images/apartment.jpg' %}" alt="Apartment">
@@ -59,9 +59,9 @@
             </div>
         </div>
         {% else %}
-        <!-- Page 1 Content -->
+        
         <div class="rooms-grid">
-            <!-- Family Room -->
+           
             <div class="room-booking-card">
                 <div class="room-image">
                     <img src="{% static 'images/family-room.jpg' %}" alt="Family Room">
@@ -83,7 +83,7 @@
                 </div>
             </div>
 
-            <!-- Double Room -->
+            
             <div class="room-booking-card">
                 <div class="room-image">
                     <img src="{% static 'images/double-room.jpg' %}" alt="Double Room">
@@ -105,7 +105,7 @@
                 </div>
             </div>
 
-            <!-- Small Room -->
+            
             <div class="room-booking-card">
                 <div class="room-image">
                     <img src="{% static 'images/small-room.jpg' %}" alt="Small Room">
@@ -127,7 +127,6 @@
                 </div>
             </div>
 
-            <!-- Luxury Room -->
             <div class="room-booking-card">
                 <div class="room-image">
                     <img src="{% static 'images/luxury-room.jpg' %}" alt="Luxury Room">
@@ -151,7 +150,7 @@
         </div>
         {% endif %}
 
-        <!-- Pagination -->
+        
         <nav class="pagination is-centered" role="navigation" aria-label="pagination">
             <ul class="pagination-list">
                 <li><a href="{% url 'hotel:book' %}" class="pagination-link {% if not page %}is-current{% endif %}" aria-label="Page 1">1</a></li>

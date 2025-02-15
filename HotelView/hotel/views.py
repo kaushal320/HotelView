@@ -9,7 +9,7 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.templatetags.static import static
 
-# Create your views here.
+
 
 def home(request):
     return render(request, 'index.html')
@@ -27,7 +27,7 @@ def contact(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Your message has been submitted successfully!")
-            return redirect('hotel:contact')  # Replace 'contact' with the name of your contact page URL
+            return redirect('hotel:contact')  
         else:
             messages.error(request, "There was an error in your submission. Please try again.")
     else:
