@@ -29,7 +29,7 @@
                 <a href="{% url 'hotel:home' %}" class="navbar-item has-text-white">Home</a>
                 <a href="{% url 'hotel:about' %}"  class="navbar-item has-text-white">About</a>
                 <a href="{% url 'hotel:contact' %}"  class="navbar-item has-text-white">Contact Us</a>
-                <a href="#" class="navbar-item has-text-white">Book Now</a>
+                <a href="{% url 'hotel:book' %}" class="navbar-item has-text-white">Book Now</a>
                 
                 {% if user.is_authenticated %}
                     <div class="navbar-item has-dropdown is-hoverable">
@@ -82,37 +82,42 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h3>Hotel View</h3>
-                <div class="connect-with-us">
-                    <h4>Connect with Us</h4>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                    </div>
+                <div class="footer-links">
+                    <a href="{% url 'hotel:home' %}">Home</a>
+                    <a href="{% url 'hotel:about' %}">About</a>
+                    <a href="{% url 'hotel:contact' %}">Contact Us</a>
+                    <a href="{% url 'hotel:book' %}">Book Now</a>
                 </div>
             </div>
+
             <div class="footer-section">
-                <h4>Contact Us</h4>
-                <p>HotelView Nepal</p>
-                <p>+977 9860000000</p>
+                <h3>Connect with Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
             </div>
+
             <div class="footer-section">
-                <h4>Subscribe Us</h4>
+                <h3>Contact Us</h3>
+                <div class="footer-links">
+                    <p>HotelView Nepal</p>
+                    <p>+977 9860000000</p>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Subscribe Us</h3>
                 <p>Sign up for special offers</p>
-                <div class="subscribe-form">
+                <form class="subscribe-form">
                     <input type="email" placeholder="Enter your email">
                     <button type="submit">→</button>
-                </div>
+                </form>
             </div>
         </div>
+
         <div class="footer-bottom">
-            <div class="footer-links">
-                <a href="#">Home</a>
-                <a href="#">About</a>
-                <a href="#">Contact Us</a>
-                <a href="#">Log In</a>
-                <a href="#">Book Now</a>
-            </div>
             <p>Copyright 2024 by HotelView</p>
         </div>
     </footer>

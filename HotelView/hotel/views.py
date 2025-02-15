@@ -104,4 +104,5 @@ def logout_view(request):
     return redirect('hotel:home')
 
 def book(request):
-    return render(request, 'book.html')
+    page = request.GET.get('page')
+    return render(request, 'book.html', {'page': page})

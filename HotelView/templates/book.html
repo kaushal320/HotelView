@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Book Now - HotelView{% endblock %}
+
+{% block content %}
+<section class="book-section">
+    <div class="book-header" style="background-image: url('{% static 'images/Book now.jpg' %}')">
+        <div class="header-overlay"></div>
+        <h1 class="title has-text-centered has-text-white">Book Now</h1>
+    </div>
+
+    <div class="container">
+        {% if page == '2' %}
+        <!-- Page 2 Content -->
+        <div class="rooms-grid">
+            <!-- Theater Room -->
+            <div class="room-booking-card">
+                <div class="room-image">
+                    <img src="{% static 'images/theater room.jpg' %}" alt="Theater Room">
+                    <div class="room-rating">
+                        <span class="stars">★★★★★</span>
+                    </div>
+                </div>
+                <div class="room-details">
+                    <h3>Theater Room</h3>
+                    <div class="amenities">
+                        <span><i class="fas fa-user"></i> 2 Guests</span>
+                        <span><i class="fas fa-tv"></i> Home Theater</span>
+                    </div>
+                    <div class="room-price">
+                        <span class="price">$250</span>
+                        <span class="per-night">per night</span>
+                    </div>
+                    <button class="button is-primary book-button">Book Now</button>
+                </div>
+            </div>
+
+            <!-- Apartment -->
+            <div class="room-booking-card">
+                <div class="room-image">
+                    <img src="{% static 'images/apartment.jpg' %}" alt="Apartment">
+                    <div class="room-rating">
+                        <span class="stars">★★★★★</span>
+                    </div>
+                </div>
+                <div class="room-details">
+                    <h3>Apartment</h3>
+                    <div class="amenities">
+                        <span><i class="fas fa-user"></i> 6 Guests</span>
+                        <span><i class="fas fa-home"></i> Full Kitchen</span>
+                    </div>
+                    <div class="room-price">
+                        <span class="price">$400</span>
+                        <span class="per-night">per night</span>
+                    </div>
+                    <button class="button is-primary book-button">Book Now</button>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Page 1 Content -->
+        <div class="rooms-grid">
+            <!-- Family Room -->
+            <div class="room-booking-card">
+                <div class="room-image">
+                    <img src="{% static 'images/family room.jpg' %}" alt="Family Room">
+                    <div class="room-rating">
+                        <span class="stars">★★★★★</span>
+                    </div>
+                </div>
+                <div class="room-details">
+                    <h3>Family Room</h3>
+                    <div class="amenities">
+                        <span><i class="fas fa-user"></i> 4 Guests</span>
+                        <span><i class="fas fa-bed"></i> 2 Beds</span>
+                    </div>
+                    <div class="room-price">
+                        <span class="price">$200</span>
+                        <span class="per-night">per night</span>
+                    </div>
+                    <button class="button book-button">BOOK NOW</button>
+                </div>
+            </div>
+
+            <!-- Double Room -->
+            <div class="room-booking-card">
+                <div class="room-image">
+                    <img src="{% static 'images/double room.jpg' %}" alt="Double Room">
+                    <div class="room-rating">
+                        <span class="stars">★★★★☆</span>
+                    </div>
+                </div>
+                <div class="room-details">
+                    <h3>Double Room</h3>
+                    <div class="amenities">
+                        <span><i class="fas fa-user"></i> 2 Guests</span>
+                        <span><i class="fas fa-bed"></i> 1 Bed</span>
+                    </div>
+                    <div class="room-price">
+                        <span class="price">$150</span>
+                        <span class="per-night">per night</span>
+                    </div>
+                    <button class="button is-primary book-button">Book Now</button>
+                </div>
+            </div>
+
+            <!-- Small Room -->
+            <div class="room-booking-card">
+                <div class="room-image">
+                    <img src="{% static 'images/small room.jpg' %}" alt="Small Room">
+                    <div class="room-rating">
+                        <span class="stars">★★★★☆</span>
+                    </div>
+                </div>
+                <div class="room-details">
+                    <h3>Small Room</h3>
+                    <div class="amenities">
+                        <span><i class="fas fa-user"></i> 1 Guest</span>
+                        <span><i class="fas fa-bed"></i> 1 Bed</span>
+                    </div>
+                    <div class="room-price">
+                        <span class="price">$100</span>
+                        <span class="per-night">per night</span>
+                    </div>
+                    <button class="button is-primary book-button">Book Now</button>
+                </div>
+            </div>
+
+            <!-- Luxury Room -->
+            <div class="room-booking-card">
+                <div class="room-image">
+                    <img src="{% static 'images/luxury room.jpg' %}" alt="Luxury Room">
+                    <div class="room-rating">
+                        <span class="stars">★★★★★</span>
+                    </div>
+                </div>
+                <div class="room-details">
+                    <h3>Luxury Room</h3>
+                    <div class="amenities">
+                        <span><i class="fas fa-user"></i> 2 Guests</span>
+                        <span><i class="fas fa-bed"></i> 1 King Bed</span>
+                    </div>
+                    <div class="room-price">
+                        <span class="price">$300</span>
+                        <span class="per-night">per night</span>
+                    </div>
+                    <button class="button is-primary book-button">Book Now</button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Pagination -->
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+            <ul class="pagination-list">
+                <li><a href="{% url 'hotel:book' %}" class="pagination-link {% if not page %}is-current{% endif %}" aria-label="Page 1">1</a></li>
+                <li><a href="{% url 'hotel:book' %}?page=2" class="pagination-link {% if page == '2' %}is-current{% endif %}" aria-label="Page 2">2</a></li>
+            </ul>
+        </nav>
+    </div>
+</section>
+{% endblock %} 

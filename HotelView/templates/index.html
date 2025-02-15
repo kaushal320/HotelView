@@ -13,40 +13,49 @@
         <img src="{% static 'images/front image.jpg' %}" alt="Front Image">
     </div>
     <div class="hotel-info-section">
-        <div class="info-text">
-            <h2>Relax in our Hotel Room</h2>
-            <p>Our hotel streamlines operations, from bookings to room management, empowering you to deliver exceptional guest experiences. With user-friendly tools, real-time updates, and seamless integrations, managing your hotel has never been easier.</p>
-        </div>
-        <div class="info-images">
-            <img src="{% static 'images/view.jpg' %}" alt="Mountain View" class="image-large">
+        <div class="hotel-info-content">
+            <div class="info-text">
+                <h2>Relax in our Hotel Room</h2>
+                <p>Our hotel streamlines operations, from bookings to room management, empowering you to deliver exceptional guest experiences. With user-friendly tools, real-time updates, and seamless integrations, managing your hotel has never been easier.</p>
+            </div>
+            <div class="info-images">
+                <img src="{% static 'images/view.jpg' %}" alt="Mountain View" class="image-large">
+            </div>
         </div>
     </div>
     <div id="rooms-section">
         <h2 class="rooms-title">ROOMS & SUITES</h2>
-        <div class="rooms-grid">
-            <div class="room-card">
-                <img src="{% static 'images/double room.jpg' %}" alt="Double Room">
-                <div class="room-name">Double Room</div>
+        <div class="rooms-container">
+            <!-- First Row -->
+            <div class="rooms-row">
+                <div class="room-card">
+                    <img src="{% static 'images/double room.jpg' %}" alt="Double Room">
+                    <div class="room-name">Double Room</div>
+                </div>
+                <div class="room-card">
+                    <img src="{% static 'images/luxury room.jpg' %}" alt="Luxury Room">
+                    <div class="room-name">Luxury Room</div>
+                </div>
+                <div class="room-card">
+                    <img src="{% static 'images/family room.jpg' %}" alt="Family Room">
+                    <div class="room-name">Family Room</div>
+                </div>
             </div>
-            <div class="room-card">
-                <img src="{% static 'images/luxury room.jpg' %}" alt="Luxury Room">
-                <div class="room-name">Luxury Room</div>
-            </div>
-            <div class="room-card">
-                <img src="{% static 'images/family room.jpg' %}" alt="Family Room">
-                <div class="room-name">Family Room</div>
-            </div>
-            <div class="room-card">
-                <img src="{% static 'images/small room.jpg' %}" alt="Small Room">
-                <div class="room-name">Small Room</div>
-            </div>
-            <div class="room-card">
-                <img src="{% static 'images/Apartment.jpeg' %}" alt="Deluxe Room">
-                <div class="room-name">Apartment</div>
-            </div>
-            <div class="room-card">
-                <img src="{% static 'images/Theater room.jpg' %}" alt="Suite Room">
-                <div class="room-name">Theater Room</div>
+            
+            <!-- Second Row -->
+            <div class="rooms-row">
+                <div class="room-card">
+                    <img src="{% static 'images/small room.jpg' %}" alt="Small Room">
+                    <div class="room-name">Small Room</div>
+                </div>
+                <div class="room-card">
+                    <img src="{% static 'images/apartment.jpg' %}" alt="Apartment">
+                    <div class="room-name">Apartment</div>
+                </div>
+                <div class="room-card">
+                    <img src="{% static 'images/theater room.jpg' %}" alt="Theater Room">
+                    <div class="room-name">Theater Room</div>
+                </div>
             </div>
         </div>
     </div>
