@@ -35,10 +35,6 @@
                             <span>Max {{ room.max_guests }} Guests</span>
                         </div>
                         <div class="feature-item">
-                            <i class="fas fa-ruler-combined"></i>
-                            <span>{{ room.size }} sq ft</span>
-                        </div>
-                        <div class="feature-item">
                             <i class="fas fa-wifi"></i>
                             <span>Free WiFi</span>
                         </div>
@@ -56,14 +52,7 @@
                     <p>{{ room.description }}</p>
                 </div>
 
-                <div class="room-amenities">
-                    <h2>Amenities</h2>
-                    <ul class="amenities-list">
-                        {% for amenity in room.amenities %}
-                        <li><i class="{{ amenity.icon }}"></i> {{ amenity.name }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+             
 
                 <a href="{% url 'hotel:booking_form' %}?room_type={{ room.name }}" class="book-now-button">
                     Book Now

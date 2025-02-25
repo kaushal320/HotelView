@@ -234,17 +234,10 @@ def room_detail(request, room_slug):
             'beds': 2,
             'max_guests': 2,
             'size': 300,
-            'description': 'Experience comfort and style in our Double Room. Perfect for couples or solo travelers, this room features modern amenities, elegant furnishings, and a cozy atmosphere. Enjoy a peaceful stay with a comfortable queen-size bed, private bathroom, and stunning views.',
+            'description': 'The Double Room is a cozy 25 ft² accommodation designed to comfortably host up to two guests, making it an ideal choice for couples or solo travelers. Priced at Rs 3000 per night, this room offers the perfect blend of affordability and comfort. It features modern amenities, stylish furnishings, and a peaceful ambiance to ensure a relaxing and enjoyable stay. ',
             'features': [
                 {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
-                {'name': 'Mini Bar', 'icon': 'fas fa-glass-martini-alt'},
                 {'name': 'Room Service', 'icon': 'fas fa-concierge-bell'},
-            ],
-            'amenities': [
-                {'name': 'Free WiFi', 'icon': 'fas fa-wifi'},
-                {'name': 'Flat-screen TV', 'icon': 'fas fa-tv'},
-                {'name': 'Private Bathroom', 'icon': 'fas fa-bath'},
-                {'name': 'Coffee Maker', 'icon': 'fas fa-coffee'},
             ],
             'slug': 'double-room'
         },
@@ -261,18 +254,13 @@ def room_detail(request, room_slug):
             'beds': 1,
             'max_guests': 2,
             'size': 400,
-            'description': 'Indulge in ultimate luxury in our premium Luxury Room. This spacious suite offers high-end amenities, designer furnishings, and exceptional comfort. Featuring a king-size bed, luxurious bathroom, and exclusive services.',
+            'description': 'The Luxury Room is an elegant 20 ft² accommodation designed to host up to two guests, offering a perfect blend of sophistication and comfort. Priced at Rs 5000 per night, this room is ideal for travelers seeking a premium experience.Featuring high-end furnishings, modern amenities, and a serene ambiance, the Luxury Room provides an exceptional setting for relaxation and indulgence.',
             'features': [
-                {'name': 'Premium View', 'icon': 'fas fa-mountain'},
                 {'name': 'Luxury Bathroom', 'icon': 'fas fa-hot-tub'},
-                {'name': '24/7 Butler', 'icon': 'fas fa-concierge-bell'},
+                {'name': 'Room Service', 'icon': 'fas fa-concierge-bell'},
+                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
             ],
-            'amenities': [
-                {'name': 'High-speed WiFi', 'icon': 'fas fa-wifi'},
-                {'name': 'Smart TV', 'icon': 'fas fa-tv'},
-                {'name': 'Mini Bar', 'icon': 'fas fa-glass-martini'},
-                {'name': 'Safe', 'icon': 'fas fa-vault'},
-            ],
+            
             'slug': 'luxury-room'
         },
         'family-room': {
@@ -285,20 +273,16 @@ def room_detail(request, room_slug):
             ],
             'price': 4000,
             'rating': '★★★★★',
-            'beds': 3,
+            'beds': 4,
             'max_guests': 4,
             'size': 500,
-            'description': 'Our spacious Family Room is perfect for family getaways. With multiple beds and a generous living area, it provides all the comforts of home. Enjoy quality time together in this well-appointed space designed for family comfort.',
+            'description': 'The Family Room is a spacious 30 ft² accommodation designed to comfortably host up to four guests, making it an ideal choice for families or small groups. Priced at Rs.4,000 per night, the room combines comfort, style, and affordability. Guests staying for an extended period can enjoy a special discounted weekly rate, perfect for longer vacations or business stays.',
             'features': [
                 {'name': 'Family Space', 'icon': 'fas fa-users'},
                 {'name': 'Kids Corner', 'icon': 'fas fa-baby'},
                 {'name': 'Entertainment', 'icon': 'fas fa-tv'},
-            ],
-            'amenities': [
-                {'name': 'Free WiFi', 'icon': 'fas fa-wifi'},
-                {'name': 'Game Console', 'icon': 'fas fa-gamepad'},
-                {'name': 'Mini Kitchen', 'icon': 'fas fa-utensils'},
-                {'name': 'Extra Storage', 'icon': 'fas fa-box'},
+                {'name': 'Room Service', 'icon': 'fas fa-concierge-bell'},
+                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
             ],
             'slug': 'family-room'
         },
@@ -314,18 +298,11 @@ def room_detail(request, room_slug):
             'rating': '★★★★☆',
             'beds': 1,
             'max_guests': 1,
-            'size': 200,
-            'description': 'Our cozy Small Room is perfect for solo travelers. Efficiently designed to provide all essential amenities in a compact space. Enjoy a comfortable single bed and modern amenities in this budget-friendly option.',
+            'description': 'The Small Room is a compact and cozy 15 ft² accommodation designed for one guest, offering comfort and convenience at an affordable price. Priced at Rs 2000 per night, this room is perfect for solo travelers, students, or business guests seeking a budget-friendly option. Despite its size, the room features essential amenities, comfortable furnishings, and a peaceful atmosphere to ensure a pleasant stay..',
             'features': [
-                {'name': 'Work Desk', 'icon': 'fas fa-desk'},
                 {'name': 'Single Bed', 'icon': 'fas fa-bed'},
-                {'name': 'City View', 'icon': 'fas fa-city'},
-            ],
-            'amenities': [
-                {'name': 'Free WiFi', 'icon': 'fas fa-wifi'},
-                {'name': 'Smart TV', 'icon': 'fas fa-tv'},
-                {'name': 'Private Bathroom', 'icon': 'fas fa-bath'},
-                {'name': 'Reading Light', 'icon': 'fas fa-book-reader'},
+                {'name': 'Room Service', 'icon': 'fas fa-concierge-bell'},
+                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
             ],
             'slug': 'small-room'
         },
@@ -337,22 +314,16 @@ def room_detail(request, room_slug):
                 'images/apartment.jpg',
                 'images/apartment.jpg'
             ],
-            'price': 5000,
+            'price': 7000,
             'rating': '★★★★★',
-            'beds': 3,
-            'max_guests': 6,
+            'beds': 4,
+            'max_guests': 8,
             'size': 800,
-            'description': 'Experience home-like comfort in our fully furnished Apartment. Perfect for extended stays or large groups, featuring multiple bedrooms, a full kitchen, and spacious living areas. Enjoy the privacy and convenience of apartment living with hotel services.',
+            'description': 'The Apartment is a spacious 70 ft² accommodation, perfect for those seeking a home-like experience during their stay. Priced at Rs 7000 per night, this apartment offers ample space, ideal for families, small groups, or extended stays. It features modern furnishings, a fully equipped kitchenette, and all the amenities needed for comfort and convenience. Whether you are on a business trip, vacation, or looking for a longer stay, the Apartment provides a cozy, private retreat with everything you need for a memorable and relaxing experience.',
             'features': [
                 {'name': 'Full Kitchen', 'icon': 'fas fa-utensils'},
                 {'name': 'Living Room', 'icon': 'fas fa-couch'},
-                {'name': 'Multiple Bedrooms', 'icon': 'fas fa-door-open'},
-            ],
-            'amenities': [
-                {'name': 'Washing Machine', 'icon': 'fas fa-washer'},
-                {'name': 'Dishwasher', 'icon': 'fas fa-sink'},
-                {'name': 'Balcony', 'icon': 'fas fa-archway'},
-                {'name': 'Dining Area', 'icon': 'fas fa-utensils'},
+                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
             ],
             'slug': 'apartment'
         },
@@ -366,20 +337,16 @@ def room_detail(request, room_slug):
             ],
             'price': 500,
             'rating': '★★★★★',
-            'beds': 1,
-            'max_guests': 2,
+            'beds': 4,
+            'max_guests': 4,
             'size': 350,
-            'description': 'Our unique Theater Room offers an immersive entertainment experience with a private cinema setup. Perfect for movie enthusiasts, featuring a large projection screen, surround sound system, and comfortable seating. Enjoy your favorite films in ultimate privacy.',
+            'description': 'The Theater Room is a luxurious 70 ft² space, designed to provide an immersive cinematic experience. Priced at Rs 5000 per night, this room is perfect for movie enthusiasts, families, or groups who want to enjoy a private theater experience. It is equipped with high-quality sound systems, a large screen, and comfortable seating, ensuring a premium viewing experience. Whether you are hosting a movie night, enjoying your favorite shows, or having a special event, the Theater Room offers an exceptional setting for entertainment and relaxation. With its modern amenities and cozy atmosphere, its the perfect retreat for a memorable cinematic experience.',
             'features': [
                 {'name': 'Projector Screen', 'icon': 'fas fa-film'},
                 {'name': 'Surround Sound', 'icon': 'fas fa-volume-up'},
                 {'name': 'Movie Library', 'icon': 'fas fa-server'},
-            ],
-            'amenities': [
-                {'name': 'Streaming Services', 'icon': 'fas fa-play-circle'},
-                {'name': 'Mini Bar', 'icon': 'fas fa-glass-martini'},
-                {'name': 'Reclining Seats', 'icon': 'fas fa-chair'},
-                {'name': 'Mood Lighting', 'icon': 'fas fa-lightbulb'},
+                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
+                {'name': 'Food Service', 'icon': 'fas fa-concierge-bell'}
             ],
             'slug': 'theater-room'
         }
