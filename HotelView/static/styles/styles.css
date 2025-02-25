@@ -6,12 +6,14 @@
     left: 0;
     z-index: 1000;
     height: 52px;
+    border-bottom: none;
   }
   .navbar-item {
     position: relative;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.8) !important;
     transition: color 0.3s ease;
+    border-bottom: none;
   }
   
   .navbar-item::after {
@@ -45,6 +47,7 @@
     color: #b38b59 !important;
     font-weight: 500;
     font-size: 1.2rem;
+    border-bottom: none;
   }
 
   #front image{
@@ -1555,6 +1558,7 @@
       background-color: #1a1a1a;
       margin-top: 52px;
       min-height: calc(100vh - 52px);
+      border-top: none;
   }
 
   .room-detail-container {
