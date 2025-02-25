@@ -109,38 +109,62 @@ def book(request):
     return render(request, 'book.html', {'page': page})
 
 def booking_form(request):
-    room_type = request.GET.get('room_type', 'Standard Room')
+    room_type = request.GET.get('room_type')
     
-    # Map room types to their image paths
-    room_images = {
-        'Theater Room': 'images/theater-room.jpg',
-        'Apartment': 'images/apartment.jpg',
-        'Family Room': 'images/family-room.jpg',
-        'Double Room': 'images/double-room.jpg',
-        'Small Room': 'images/small-room.jpg',
-        'Luxury Room': 'images/luxury-room.jpg'
+    # Define room configurations including price, max guests, image and rating
+    room_configs = {
+        'Theater Room': {
+            'price': 500,
+            'max_guests': 2,
+            'image': 'images/theater-room.jpg',
+            'rating': '★★★★★'
+        },
+        'Apartment': {
+            'price': 5000,
+            'max_guests': 6,
+            'image': 'images/apartment.jpg',
+            'rating': '★★★★★'
+        },
+        'Family Room': {
+            'price': 4000,
+            'max_guests': 4,
+            'image': 'images/family-room.jpg',
+            'rating': '★★★★★'
+        },
+        'Double Room': {
+            'price': 3000,
+            'max_guests': 2,
+            'image': 'images/double-room.jpg',
+            'rating': '★★★★☆'
+        },
+        'Small Room': {
+            'price': 2000,
+            'max_guests': 1,
+            'image': 'images/small-room.jpg',
+            'rating': '★★★★☆'
+        },
+        'Luxury Room': {
+            'price': 5000,
+            'max_guests': 2,
+            'image': 'images/luxury-room.jpg',
+            'rating': '★★★★★'
+        }
     }
-    
-    # Get the corresponding image path for the room type
-    room_image = room_images.get(room_type, 'images/default-room.jpg')
-    
-    # Map room types to their ratings
-    room_ratings = {
-        'Theater Room': '★★★★★',
-        'Apartment': '★★★★★',
-        'Family Room': '★★★★★',
-        'Double Room': '★★★★☆',
-        'Small Room': '★★★★☆',
-        'Luxury Room': '★★★★★'
-    }
-    
-    # Get the corresponding rating for the room type
-    room_rating = room_ratings.get(room_type, '★★★★☆')
-    
+
+    # Get room configuration or use default values
+    room_config = room_configs.get(room_type, {
+        'price': 4000,
+        'max_guests': 2,
+        'image': 'images/default-room.jpg',
+        'rating': '★★★★☆'
+    })
+
     context = {
         'room_type': room_type,
-        'room_image': room_image,
-        'room_rating': room_rating,
+        'room_price': room_config['price'],
+        'max_guests': room_config['max_guests'],
+        'room_image': room_config['image'],
+        'room_rating': room_config['rating'],
         'check_in_day': '16',
         'check_in_month': 'Dec, 2024',
         'check_in_weekday': 'TUESDAY',
@@ -148,4 +172,5 @@ def booking_form(request):
         'check_out_month': 'Dec, 2024',
         'check_out_weekday': 'TUESDAY',
     }
+    
     return render(request, 'booking_form.html', context)

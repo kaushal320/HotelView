@@ -41,22 +41,22 @@
                     <div class="counter-box">
                         <span>GUESTS</span>
                         <div class="counter">
-                            <button class="decrease">-</button>
-                            <span class="count">1</span>
-                            <button class="increase">+</button>
+                            <button type="button" class="decrease">-</button>
+                            <span class="count" id="guestCount">1</span>
+                            <button type="button" class="increase">+</button>
                         </div>
                     </div>
                     <div class="counter-box">
                         <span>NIGHTS</span>
                         <div class="counter">
-                            <button class="decrease">-</button>
-                            <span class="count">1</span>
-                            <button class="increase">+</button>
+                            <button type="button" class="decrease">-</button>
+                            <span class="count" id="nightCount">1</span>
+                            <button type="button" class="increase">+</button>
                         </div>
                     </div>
                 </div>
                 <div class="price-display">
-                    <span class="total-price">RS. 4,000/-</span>
+                    <span class="total-price">RS. <span id="totalPrice">{{ room_price|default:"4000" }}</span>/-</span>
                 </div>
             </div>
         </div>
@@ -94,4 +94,51 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Use default values if variables are not set
+        const basePrice = {{ room_price|default:4000 }};
+        const maxGuests = {{ max_guests|default:2 }};
+        const guestCount = document.getElementById('guestCount');
+        const nightCount = document.getElementById('nightCount');
+        const totalPrice = document.getElementById('totalPrice');
+        
+        function updatePrice() {
+            const guests = parseInt(guestCount.textContent);
+            const nights = parseInt(nightCount.textContent);
+            let newPrice = basePrice * nights;
+            
+            // Add 20% per additional guest after the first guest
+            if (guests > 1) {
+                newPrice *= (1 + ((guests - 1) * 0.2));
+            }
+            
+            totalPrice.textContent = Math.round(newPrice);
+        }
+
+        document.querySelectorAll('.counter').forEach(counter => {
+            const decreaseBtn = counter.querySelector('.decrease');
+            const increaseBtn = counter.querySelector('.increase');
+            const countSpan = counter.querySelector('.count');
+
+            decreaseBtn.addEventListener('click', () => {
+                let count = parseInt(countSpan.textContent);
+                if (count > 1) {
+                    countSpan.textContent = count - 1;
+                    updatePrice();
+                }
+            });
+
+            increaseBtn.addEventListener('click', () => {
+                let count = parseInt(countSpan.textContent);
+                if ((countSpan.id === 'guestCount' && count < maxGuests) || 
+                    (countSpan.id === 'nightCount' && count < 30)) {
+                    countSpan.textContent = count + 1;
+                    updatePrice();
+                }
+            });
+        });
+    });
+</script>
 {% endblock %} 
