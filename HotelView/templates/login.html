@@ -21,8 +21,9 @@
                             </div>
                         {% endfor %}
                     {% endif %}
-                    <form method="POST">
+                    <form method="post" action="{% url 'hotel:login' %}{% if next %}?next={{ next }}{% endif %}">
                         {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ next }}">
                         <div class="field">
                             <label class="label">Email</label>
                             <div class="control">

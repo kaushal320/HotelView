@@ -46,10 +46,17 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, f'Welcome, {user.first_name}!')
+            
+            # Get the next URL from POST data (more secure than GET)
+            next_url = request.POST.get('next') or request.GET.get('next')
+            if next_url:
+                return redirect(next_url)
             return redirect('hotel:home')
         else:
             messages.error(request, 'Invalid email or password.')
-    return render(request, 'login.html')
+    
+    next_url = request.GET.get('next', '')
+    return render(request, 'login.html', {'next': next_url})
 
 def register_view(request):
     if request.method == 'POST':
@@ -110,7 +117,7 @@ def book(request):
     page = request.GET.get('page')
     return render(request, 'book.html', {'page': page})
 
-@login_required
+@login_required(login_url='hotel:login')
 def booking_form(request):
     if request.method == 'POST':
         # Get form data

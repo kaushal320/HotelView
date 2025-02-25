@@ -1797,3 +1797,25 @@
       }
   }
 
+  .login-prompt {
+      margin-top: 30px;
+      text-align: center;
+  }
+
+  .login-prompt p {
+      color: #b38b59;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+  }
+
+  .login-prompt .book-now-button {
+      margin-top: 10px;
+      background: transparent;
+      border: 2px solid #b38b59;
+  }
+
+  .login-prompt .book-now-button:hover {
+      background: #b38b59;
+      color: white;
+  }
+

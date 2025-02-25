@@ -51,9 +51,18 @@ HotelView{% endblock %} {% block content %}
 
              
 
-                <a href="{% url 'hotel:booking_form' %}?room_type={{ room.name }}" class="book-now-button">
-                    Book Now
-                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'hotel:booking_form' %}?room_type={{ room.name|urlencode }}" class="book-now-button">
+                        Book Now
+                    </a>
+                {% else %}
+                    <div class="login-prompt">
+                        <p>Please login to book this room</p>
+                        <a href="{% url 'hotel:login' %}?next={% url 'hotel:booking_form' %}%3Froom_type%3D{{ room.name|urlencode }}" class="book-now-button">
+                            Login to Book
+                        </a>
+                    </div>
+                {% endif %}
             </div>
 
         </div>
