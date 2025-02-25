@@ -65,6 +65,9 @@
             <h2>Add Your Information</h2>
             <form id="bookingForm" method="POST">
                 {% csrf_token %}
+                <input type="hidden" name="guests" id="guestsInput" value="1">
+                <input type="hidden" name="nights" id="nightsInput" value="1">
+                <input type="hidden" name="total_price" id="totalPriceInput" value="{{ room_price }}">
                 <div class="form-group">
                     <label for="name">Name*</label>
                     <input type="text" id="name" name="name" required>
@@ -114,6 +117,12 @@
                 newPrice *= (1 + ((guests - 1) * 0.2));
             }
             
+            // Update hidden inputs
+            document.getElementById('guestsInput').value = guests;
+            document.getElementById('nightsInput').value = nights;
+            document.getElementById('totalPriceInput').value = Math.round(newPrice);
+            
+            // Update display
             totalPrice.textContent = Math.round(newPrice);
         }
 

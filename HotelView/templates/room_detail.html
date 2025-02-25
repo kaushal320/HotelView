@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ room.name }} - HotelView{% endblock %}
+
+{% block content %}
+<section class="room-detail-section">
+    <div class="room-detail-container">
+        <div class="room-detail-main">
+            <div class="room-gallery">
+                <div class="main-image">
+                    <img src="{% static room.image %}" alt="{{ room.name }}">
+                </div>
+            </div>
+
+            <div class="room-info">
+                <div class="room-header">
+                    <h1>{{ room.name }}</h1>
+                    <div class="room-rating">
+                        <span class="stars">{{ room.rating }}</span>
+                        <span class="price">RS. {{ room.price }}/-</span>
+                        <span class="per-night">per night</span>
+                    </div>
+                </div>
+
+                <div class="room-features">
+                    <h2>Room Features</h2>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <i class="fas fa-bed"></i>
+                            <span>{{ room.beds }} Beds</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-users"></i>
+                            <span>Max {{ room.max_guests }} Guests</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-ruler-combined"></i>
+                            <span>{{ room.size }} sq ft</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-wifi"></i>
+                            <span>Free WiFi</span>
+                        </div>
+                        {% for feature in room.features %}
+                        <div class="feature-item">
+                            <i class="{{ feature.icon }}"></i>
+                            <span>{{ feature.name }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="room-description">
+                    <h2>Description</h2>
+                    <p>{{ room.description }}</p>
+                </div>
+
+                <div class="room-amenities">
+                    <h2>Amenities</h2>
+                    <ul class="amenities-list">
+                        {% for amenity in room.amenities %}
+                        <li><i class="{{ amenity.icon }}"></i> {{ amenity.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <a href="{% url 'hotel:booking_form' %}?room_type={{ room.name }}" class="book-now-button">
+                    Book Now
+                </a>
+            </div>
+        </div>
+
+        <div class="room-sidebar">
+            <h2>Similar Rooms</h2>
+            {% for similar_room in similar_rooms %}
+            <div class="similar-room-card">
+                <img src="{% static similar_room.image %}" alt="{{ similar_room.name }}">
+                <div class="similar-room-info">
+                    <h3>{{ similar_room.name }}</h3>
+                    <div class="price-info">
+                        <span class="price">RS. {{ similar_room.price }}/-</span>
+                        <span class="per-night">per night</span>
+                    </div>
+                    <a href="{% url 'hotel:room_detail' similar_room.slug %}" class="view-room-button">View Room</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %} 

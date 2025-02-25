@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Booking Confirmation - HotelView{% endblock %}
+
+{% block content %}
+<section class="confirmation-section">
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+            <div class="confirmation-header">
+                <div class="success-animation">
+                    <div class="checkmark">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+                <h1>Your booking is now confirmed!</h1>
+            </div>
+
+            <div class="hotel-preview">
+                <div class="hotel-image">
+                    <img src="{% static room_image %}" alt="{{ room_type }}">
+                </div>
+                <div class="hotel-info">
+                    <h2>{{ booking.room_type }}</h2>
+                    <p class="hotel-description">{{ room_rating }}</p>
+                </div>
+            </div>
+
+            <div class="booking-dates">
+                <div class="date-item">
+                    <h3>Check-in</h3>
+                    <div class="date">{{ booking.check_in|date:"l, d F Y" }}</div>
+                    <div class="time">from {{ booking.check_in|date:"g:i A" }}</div>
+                </div>
+                <div class="date-item">
+                    <h3>Check-out</h3>
+                    <div class="date">{{ booking.check_out|date:"l, d F Y" }}</div>
+                    <div class="time">until {{ booking.check_out|date:"g:i A" }}</div>
+                </div>
+            </div>
+
+            <div class="booking-details">
+                <div class="detail-row">
+                    <span class="label">Room</span>
+                    <span class="value">{{ booking.room_type }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Guests</span>
+                    <span class="value">{{ booking.guests }} Person(s)</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Duration</span>
+                    <span class="value">{{ booking.nights }} Night(s)</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Total Amount</span>
+                    <span class="value price">RS. {{ booking.total_price }}/-</span>
+                </div>
+            </div>
+
+            <div class="guest-details">
+                <h3>Guest Information</h3>
+                <div class="detail-row">
+                    <span class="label">Full Name</span>
+                    <span class="value">{{ booking.name }} {{ booking.surname }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Email</span>
+                    <span class="value">{{ booking.email }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Address</span>
+                    <span class="value">{{ booking.address }}</span>
+                </div>
+            </div>
+
+            <div class="confirmation-actions">
+                <a href="{% url 'hotel:home' %}" class="home-button">Return to Home</a>
+                <button onclick="window.print()" class="print-button">Print Confirmation</button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 
