@@ -158,10 +158,7 @@
     z-index: 1;
   }
 
-  .room-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(179, 139, 89, 0.3);
-  }
+  
 
   .room-card img {
     width: 100%;
