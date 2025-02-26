@@ -18,21 +18,23 @@
                 <div class="reservation-info">
                     <div class="date-box">
                         <h4>CHECK-IN</h4>
+                        <input type="date" id="checkInDate" class="date-picker" onchange="updateDates()">
                         <div class="date">
-                            <span class="day">{{ check_in_day }}</span>
+                            <span class="day" id="checkInDay"></span>
                             <div class="date-details">
-                                <span class="month">{{ check_in_month }}</span>
-                                <span class="weekday">{{ check_in_weekday }}</span>
+                                <span class="month" id="checkInMonth"></span>
+                                <span class="weekday" id="checkInWeekday"></span>
                             </div>
                         </div>
                     </div>
                     <div class="date-box">
                         <h4>CHECK-OUT</h4>
+                        <input type="date" id="checkOutDate" class="date-picker" onchange="updateDates()">
                         <div class="date">
-                            <span class="day">{{ check_out_day }}</span>
+                            <span class="day" id="checkOutDay"></span>
                             <div class="date-details">
-                                <span class="month">{{ check_out_month }}</span>
-                                <span class="weekday">{{ check_out_weekday }}</span>
+                                <span class="month" id="checkOutMonth"></span>
+                                <span class="weekday" id="checkOutWeekday"></span>
                             </div>
                         </div>
                     </div>
@@ -148,6 +150,71 @@
                 }
             });
         });
+
+        // Format date functions
+        function formatDay(date) {
+            return date.getDate();
+        }
+
+        function formatMonth(date) {
+            return date.toLocaleString('default', { month: 'short' }) + ', ' + date.getFullYear();
+        }
+
+        function formatWeekday(date) {
+            return date.toLocaleString('default', { weekday: 'long' }).toUpperCase();
+        }
+
+        // Set today's date as minimum for check-in
+        const today = new Date();
+        const checkInInput = document.getElementById('checkInDate');
+        checkInInput.min = today.toISOString().split('T')[0];
+        checkInInput.value = today.toISOString().split('T')[0];
+
+        // Set tomorrow as minimum for check-out
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const checkOutInput = document.getElementById('checkOutDate');
+        checkOutInput.min = tomorrow.toISOString().split('T')[0];
+        checkOutInput.value = tomorrow.toISOString().split('T')[0];
+
+        // Initialize displays
+        updateDates();
     });
+
+    function updateDates() {
+        const checkInDate = new Date(document.getElementById('checkInDate').value);
+        const checkOutDate = new Date(document.getElementById('checkOutDate').value);
+
+        // Update check-in display
+        document.getElementById('checkInDay').textContent = checkInDate.getDate();
+        document.getElementById('checkInMonth').textContent = 
+            checkInDate.toLocaleString('default', { month: 'short' }) + ', ' + checkInDate.getFullYear();
+        document.getElementById('checkInWeekday').textContent = 
+            checkInDate.toLocaleString('default', { weekday: 'long' }).toUpperCase();
+
+        // Update check-out display
+        document.getElementById('checkOutDay').textContent = checkOutDate.getDate();
+        document.getElementById('checkOutMonth').textContent = 
+            checkOutDate.toLocaleString('default', { month: 'short' }) + ', ' + checkOutDate.getFullYear();
+        document.getElementById('checkOutWeekday').textContent = 
+            checkOutDate.toLocaleString('default', { weekday: 'long' }).toUpperCase();
+
+        // Update minimum check-out date based on check-in date
+        const minCheckOut = new Date(checkInDate);
+        minCheckOut.setDate(minCheckOut.getDate() + 1);
+        document.getElementById('checkOutDate').min = minCheckOut.toISOString().split('T')[0];
+
+        // If check-out date is before check-in date, update it
+        if (checkOutDate <= checkInDate) {
+            document.getElementById('checkOutDate').value = minCheckOut.toISOString().split('T')[0];
+            updateDates(); // Recursive call to update displays
+            return;
+        }
+
+        // Update nights count
+        const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+        document.getElementById('nightCount').textContent = nights;
+        updatePrice();
+    }
 </script>
 {% endblock %} 
