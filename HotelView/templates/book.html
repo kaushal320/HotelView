@@ -11,152 +11,38 @@
     </div>
 
     <div class="container">
-        {% if page == '2' %}
-        
         <div class="rooms-grid">
-            
+            {% for room in rooms %}
             <div class="room-booking-card">
                 <div class="room-image">
-                    <img src="{% static 'images/theater-room.jpg' %}" alt="Theater Room">
+                    <img src="{{ room.image.url }}" alt="{{ room.name }}">
                     <div class="room-rating">
-                        <span class="stars">★★★★★</span>
+                        <span class="stars">{{ room.rating }}</span>
                     </div>
                 </div>
                 <div class="room-details">
-                    <h3>Theater Room</h3>
+                    <h3>{{ room.name }}</h3>
                     <div class="amenities">
-                        <span><i class="fas fa-user"></i> 2 Guests</span>
-                        <span><i class="fas fa-tv"></i> Home Theater</span>
+                        <span><i class="fas fa-user"></i> {{ room.max_guests }} Guests</span>
+                        <span><i class="fas fa-bed"></i> {{ room.beds }} Bed{% if room.beds > 1 %}s{% endif %}</span>
                     </div>
                     <div class="room-price">
-                        <span class="price">Rs. 500</span>
-                        <span class="per-night">per hour</span>
-                    </div>
-                    <button class="button is-primary book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Theater Room'">Book Now</button>
-                </div>
-            </div>
-
-            
-            <div class="room-booking-card">
-                <div class="room-image">
-                    <img src="{% static 'images/apartment.jpg' %}" alt="Apartment">
-                    <div class="room-rating">
-                        <span class="stars">★★★★★</span>
-                    </div>
-                </div>
-                <div class="room-details">
-                    <h3>Apartment</h3>
-                    <div class="amenities">
-                        <span><i class="fas fa-user"></i> 6 Guests</span>
-                        <span><i class="fas fa-home"></i> Bedroom with Full Kitchen</span>
-                    </div>
-                    <div class="room-price">
-                        <span class="price">Rs. 7000</span>
+                        <span class="price">Rs. {{ room.price }}</span>
                         <span class="per-night">per night</span>
                     </div>
-                    <button class="button is-primary book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Apartment'">Book Now</button>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'hotel:booking_form' %}?room_type={{ room.name|urlencode }}" class="button is-primary book-button">
+                            Book Now
+                        </a>
+                    {% else %}
+                        <a href="{% url 'hotel:login' %}?next={% url 'hotel:booking_form' %}?room_type={{ room.name|urlencode }}" class="button is-primary book-button">
+                            Login to Book
+                        </a>
+                    {% endif %}
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% else %}
-        
-        <div class="rooms-grid">
-           
-            <div class="room-booking-card">
-                <div class="room-image">
-                    <img src="{% static 'images/family-room.jpg' %}" alt="Family Room">
-                    <div class="room-rating">
-                        <span class="stars">★★★★★</span>
-                    </div>
-                </div>
-                <div class="room-details">
-                    <h3>Family Room</h3>
-                    <div class="amenities">
-                        <span><i class="fas fa-user"></i> 4 Guests</span>
-                        <span><i class="fas fa-bed"></i> 4 single bed</span>
-                    </div>
-                    <div class="room-price">
-                        <span class="price">Rs. 4000</span>
-                        <span class="per-night">per night</span>
-                    </div>
-                    <button class="button book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Family Room'">BOOK NOW</button>
-                </div>
-            </div>
-
-            
-            <div class="room-booking-card">
-                <div class="room-image">
-                    <img src="{% static 'images/double-room.jpg' %}" alt="Double Room">
-                    <div class="room-rating">
-                        <span class="stars">★★★★☆</span>
-                    </div>
-                </div>
-                <div class="room-details">
-                    <h3>Double Room</h3>
-                    <div class="amenities">
-                        <span><i class="fas fa-user"></i> 2 Guests</span>
-                        <span><i class="fas fa-bed"></i> 2 Bed</span>
-                    </div>
-                    <div class="room-price">
-                        <span class="price">Rs. 3000</span>
-                        <span class="per-night">per night</span>
-                    </div>
-                    <button class="button is-primary book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Double Room'">Book Now</button>
-                </div>
-            </div>
-
-            
-            <div class="room-booking-card">
-                <div class="room-image">
-                    <img src="{% static 'images/small-room.jpg' %}" alt="Small Room">
-                    <div class="room-rating">
-                        <span class="stars">★★★★☆</span>
-                    </div>
-                </div>
-                <div class="room-details">
-                    <h3>Small Room</h3>
-                    <div class="amenities">
-                        <span><i class="fas fa-user"></i> 1 Guest</span>
-                        <span><i class="fas fa-bed"></i> 1 Bed</span>
-                    </div>
-                    <div class="room-price">
-                        <span class="price">Rs. 2000</span>
-                        <span class="per-night">per night</span>
-                    </div>
-                    <button class="button is-primary book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Small Room'">Book Now</button>
-                </div>
-            </div>
-
-            <div class="room-booking-card">
-                <div class="room-image">
-                    <img src="{% static 'images/luxury-room.jpg' %}" alt="Luxury Room">
-                    <div class="room-rating">
-                        <span class="stars">★★★★★</span>
-                    </div>
-                </div>
-                <div class="room-details">
-                    <h3>Luxury Room</h3>
-                    <div class="amenities">
-                        <span><i class="fas fa-user"></i> 2 Guests</span>
-                        <span><i class="fas fa-bed"></i> 1 King Bed</span>
-                    </div>
-                    <div class="room-price">
-                        <span class="price">Rs. 5000</span>
-                        <span class="per-night">per night</span>
-                    </div>
-                    <button class="button is-primary book-button" onclick="window.location.href='{% url 'hotel:booking_form' %}?room_type=Luxury Room'">Book Now</button>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-
-        
-        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-            <ul class="pagination-list">
-                <li><a href="{% url 'hotel:book' %}" class="pagination-link {% if not page %}is-current{% endif %}" aria-label="Page 1">1</a></li>
-                <li><a href="{% url 'hotel:book' %}?page=2" class="pagination-link {% if page == '2' %}is-current{% endif %}" aria-label="Page 2">2</a></li>
-            </ul>
-        </nav>
     </div>
 </section>
 {% endblock %} 

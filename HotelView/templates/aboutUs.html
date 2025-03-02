@@ -10,36 +10,43 @@
 <div id="rooms-section">
     <h2 class="rooms-title">ROOMS & SUITES</h2>
     <div class="rooms-container">
-        <div class="rooms-row">
+        <div class="rooms-grid-container">
+            <!-- Double Room -->
             <div class="room-card">
                 <img src="{% static 'images/double-room.jpg' %}" alt="Double Room">
                 <div class="room-name">Double Room</div>
                 <a href="{% url 'hotel:room_detail' 'double-room' %}" class="room-link"></a>
             </div>
+            
+            <!-- Luxury Room -->
             <div class="room-card">
                 <img src="{% static 'images/luxury-room.jpg' %}" alt="Luxury Room">
                 <div class="room-name">Luxury Room</div>
                 <a href="{% url 'hotel:room_detail' 'luxury-room' %}" class="room-link"></a>
             </div>
+            
+            <!-- Family Room -->
             <div class="room-card">
                 <img src="{% static 'images/family-room.jpg' %}" alt="Family Room">
                 <div class="room-name">Family Room</div>
                 <a href="{% url 'hotel:room_detail' 'family-room' %}" class="room-link"></a>
             </div>
-        </div>
-        
-        
-        <div class="rooms-row">
+            
+            <!-- Small Room -->
             <div class="room-card">
                 <img src="{% static 'images/small-room.jpg' %}" alt="Small Room">
                 <div class="room-name">Small Room</div>
                 <a href="{% url 'hotel:room_detail' 'small-room' %}" class="room-link"></a>
             </div>
+            
+            <!-- Apartment -->
             <div class="room-card">
                 <img src="{% static 'images/apartment.jpg' %}" alt="Apartment">
                 <div class="room-name">Apartment</div>
                 <a href="{% url 'hotel:room_detail' 'apartment' %}" class="room-link"></a>
             </div>
+            
+            <!-- Theater Room -->
             <div class="room-card">
                 <img src="{% static 'images/theater-room.jpg' %}" alt="Theater Room">
                 <div class="room-name">Theater Room</div>

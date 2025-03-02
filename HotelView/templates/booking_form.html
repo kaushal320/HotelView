@@ -4,217 +4,461 @@
 {% block title %}Complete Your Booking - HotelView{% endblock %}
 
 {% block content %}
-<section class="booking-form-section">
-    <div class="booking-form-container">
-        <div class="room-preview">
-            <div class="room-image">
-                <img src="{% static room_image %}" alt="{{ room_type }}">
-                <div class="room-rating">
-                    <span class="stars">{{ room_rating }}</span>
+<div class="booking-container">
+    <!-- Left side with room image and details -->
+    <div class="room-details">
+        <div class="room-image">
+            <img src="{{ room.image.url }}" alt="{{ room_type }}">
+        </div>
+        <div class="room-info-box">
+            <h2>{{ room_type }}</h2>
+            <div class="room-price">Rs. {{ room_price }} <span>per night</span></div>
+            <div class="room-meta">
+                <div class="guest-info">
+                    <i class="fas fa-user"></i> Max {{ max_guests }} Guests
                 </div>
+                <div class="rating">{{ room_rating }}</div>
             </div>
-            <div class="booking-details">
-                <h3>{{ room_type }}</h3>
-                <div class="reservation-info">
-                    <div class="date-box">
-                        <h4>CHECK-IN</h4>
-                        <input type="date" id="checkInDate" class="date-picker" onchange="updateDates()">
-                        <div class="date">
-                            <span class="day" id="checkInDay"></span>
+            
+            <!-- Check-in/Check-out section -->
+            <div class="booking-dates">
+                <div class="check-dates">
+                    <div class="check-box">
+                        <h3>CHECK-IN</h3>
+                        <div class="date-picker">
+                            <div class="date-number">2</div>
                             <div class="date-details">
-                                <span class="month" id="checkInMonth"></span>
-                                <span class="weekday" id="checkInWeekday"></span>
+                                <div class="month-year">Mar 2025</div>
+                                <div class="day-name">SUNDAY</div>
                             </div>
+                            <input type="date" name="check_in" required min="{{ today|date:'Y-m-d' }}" 
+                                   class="date-input" onchange="updateDates()">
                         </div>
                     </div>
-                    <div class="date-box">
-                        <h4>CHECK-OUT</h4>
-                        <input type="date" id="checkOutDate" class="date-picker" onchange="updateDates()">
-                        <div class="date">
-                            <span class="day" id="checkOutDay"></span>
+                    <div class="check-box">
+                        <h3>CHECK-OUT</h3>
+                        <div class="date-picker">
+                            <div class="date-number">3</div>
                             <div class="date-details">
-                                <span class="month" id="checkOutMonth"></span>
-                                <span class="weekday" id="checkOutWeekday"></span>
+                                <div class="month-year">Mar 2025</div>
+                                <div class="day-name">MONDAY</div>
                             </div>
+                            <input type="date" name="check_out" required 
+                                   class="date-input" onchange="updateDatesFromCheckOut()">
                         </div>
                     </div>
-                </div>
-                <div class="booking-counters">
-                    <div class="counter-box">
-                        <span>GUESTS</span>
-                        <div class="counter">
-                            <button type="button" class="decrease">-</button>
-                            <span class="count" id="guestCount">1</span>
-                            <button type="button" class="increase">+</button>
-                        </div>
-                    </div>
-                    <div class="counter-box">
-                        <span>NIGHTS</span>
-                        <div class="counter">
-                            <button type="button" class="decrease">-</button>
-                            <span class="count" id="nightCount">1</span>
-                            <button type="button" class="increase">+</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="price-display">
-                    <span class="total-price">RS. <span id="totalPrice">{{ room_price|default:"4000" }}</span>/-</span>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="guest-form">
-            <h2>Add Your Information</h2>
-            <form id="bookingForm" method="POST">
+    <!-- Right side with booking form -->
+    <div class="booking-form">
+        <div class="form-section">
+            <h3>Guest Information</h3>
+            <form method="POST" id="booking-form">
                 {% csrf_token %}
-                <input type="hidden" name="guests" id="guestsInput" value="1">
-                <input type="hidden" name="nights" id="nightsInput" value="1">
-                <input type="hidden" name="total_price" id="totalPriceInput" value="{{ room_price }}">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" name="name" value="{{ user.first_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" name="surname" value="{{ user.last_name }}" required>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label for="name">Name*</label>
-                    <input type="text" id="name" name="name" required>
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ user.email }}" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="surname">Surname*</label>
-                    <input type="text" id="surname" name="surname" required>
+                    <label>Address</label>
+                    <textarea name="address" required>{{ user.profile.address }}</textarea>
                 </div>
-                <div class="form-group">
-                    <label for="email">Email*</label>
-                    <input type="email" id="email" name="email" required>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Number of Nights</label>
+                        <input type="number" name="nights" min="1" max="30" value="1" required onchange="updateTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Guests</label>
+                        <input type="number" name="guests" min="1" max="{{ max_guests }}" value="1" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="address">Address*</label>
-                    <input type="text" id="address" name="address" required>
+
+                <div class="total">
+                    Total: Rs. <span id="totalAmount">{{ room_price }}</span>
                 </div>
-                <div class="form-group">
-                    <label for="arrival">Arrival*</label>
-                    <input type="datetime-local" id="arrival" name="arrival" required>
-                </div>
-                <div class="form-group terms">
-                    <input type="checkbox" id="terms" name="terms" required>
-                    <label for="terms">Terms and Conditions*</label>
-                </div>
-                <button type="submit" class="book-it-button">Book It!</button>
+                <input type="hidden" name="total_price" id="totalPrice" value="{{ room_price }}">
+                <input type="hidden" name="arrival" value="">
+
+                <button type="submit" class="book-button">Confirm Booking</button>
             </form>
         </div>
     </div>
-</section>
+</div>
+
+<style>
+body {
+    background: #1a1a1a;
+    margin: 0;
+    padding: 0;
+}
+
+.booking-container {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 30px;
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.room-details {
+    background: #262626;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.room-image img {
+    width: 100%;
+    display: block;
+}
+
+.room-info-box {
+    padding: 20px;
+}
+
+.room-info-box h2 {
+    color: #b38b59;
+    margin: 0 0 10px 0;
+    font-size: 22px;
+}
+
+.room-price {
+    color: #fff;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.room-price span {
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.room-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    font-size: 14px;
+}
+
+.guest-info i {
+    color: #b38b59;
+    margin-right: 5px;
+}
+
+.booking-form {
+    background: #262626;
+    border-radius: 8px;
+    padding: 25px;
+}
+
+.form-section h3 {
+    color: #b38b59;
+    margin: 0 0 20px 0;
+    font-size: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    color: #fff;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.form-group textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+.total {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: right;
+}
+
+.book-button {
+    width: 100%;
+    padding: 12px;
+    background: #b38b59;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.book-button:hover {
+    background: #8b6943;
+}
+
+@media (max-width: 992px) {
+    .booking-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .booking-container {
+        padding: 15px;
+    }
+}
+
+.booking-dates {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #333;
+}
+
+.check-dates {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.check-box h3 {
+    color: #b38b59;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.date-picker {
+    background: #1a1a1a;
+    padding: 15px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+.date-number {
+    font-size: 36px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.date-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.month-year {
+    color: #fff;
+    font-size: 16px;
+}
+
+.day-name {
+    color: #b38b59;
+    font-size: 14px;
+}
+
+.date-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.date-picker:hover {
+    background: #262626;
+}
+
+.stay-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.counter {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.counter button {
+    background: #b38b59;
+    color: #fff;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.counter input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 40px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.total-price {
+    text-align: right;
+}
+
+.total-price h3 {
+    color: #b38b59;
+    font-size: 24px;
+}
+
+.terms {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+</style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Use default values if variables are not set
-        const basePrice = {{ room_price|default:4000 }};
-        const maxGuests = {{ max_guests|default:2 }};
-        const guestCount = document.getElementById('guestCount');
-        const nightCount = document.getElementById('nightCount');
-        const totalPrice = document.getElementById('totalPrice');
+function updateDates() {
+    const checkInDate = document.querySelector('input[name="check_in"]').value;
+    if (checkInDate) {
+        const date = new Date(checkInDate);
+        const checkInPicker = date.closest('.check-box');
         
-        function updatePrice() {
-            const guests = parseInt(guestCount.textContent);
-            const nights = parseInt(nightCount.textContent);
-            let newPrice = basePrice * nights;
-            
-            // Add 20% per additional guest after the first guest
-            if (guests > 1) {
-                newPrice *= (1 + ((guests - 1) * 0.2));
-            }
-            
-            // Update hidden inputs
-            document.getElementById('guestsInput').value = guests;
-            document.getElementById('nightsInput').value = nights;
-            document.getElementById('totalPriceInput').value = Math.round(newPrice);
-            
-            // Update display
-            totalPrice.textContent = Math.round(newPrice);
-        }
-
-        document.querySelectorAll('.counter').forEach(counter => {
-            const decreaseBtn = counter.querySelector('.decrease');
-            const increaseBtn = counter.querySelector('.increase');
-            const countSpan = counter.querySelector('.count');
-
-            decreaseBtn.addEventListener('click', () => {
-                let count = parseInt(countSpan.textContent);
-                if (count > 1) {
-                    countSpan.textContent = count - 1;
-                    updatePrice();
-                }
-            });
-
-            increaseBtn.addEventListener('click', () => {
-                let count = parseInt(countSpan.textContent);
-                if ((countSpan.id === 'guestCount' && count < maxGuests) || 
-                    (countSpan.id === 'nightCount' && count < 30)) {
-                    countSpan.textContent = count + 1;
-                    updatePrice();
-                }
-            });
-        });
-
-        // Format date functions
-        function formatDay(date) {
-            return date.getDate();
-        }
-
-        function formatMonth(date) {
-            return date.toLocaleString('default', { month: 'short' }) + ', ' + date.getFullYear();
-        }
-
-        function formatWeekday(date) {
-            return date.toLocaleString('default', { weekday: 'long' }).toUpperCase();
-        }
-
-        // Set today's date as minimum for check-in
-        const today = new Date();
-        const checkInInput = document.getElementById('checkInDate');
-        checkInInput.min = today.toISOString().split('T')[0];
-        checkInInput.value = today.toISOString().split('T')[0];
-
-        // Set tomorrow as minimum for check-out
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const checkOutInput = document.getElementById('checkOutDate');
-        checkOutInput.min = tomorrow.toISOString().split('T')[0];
-        checkOutInput.value = tomorrow.toISOString().split('T')[0];
-
-        // Initialize displays
-        updateDates();
-    });
-
-    function updateDates() {
-        const checkInDate = new Date(document.getElementById('checkInDate').value);
-        const checkOutDate = new Date(document.getElementById('checkOutDate').value);
-
         // Update check-in display
-        document.getElementById('checkInDay').textContent = checkInDate.getDate();
-        document.getElementById('checkInMonth').textContent = 
-            checkInDate.toLocaleString('default', { month: 'short' }) + ', ' + checkInDate.getFullYear();
-        document.getElementById('checkInWeekday').textContent = 
-            checkInDate.toLocaleString('default', { weekday: 'long' }).toUpperCase();
-
-        // Update check-out display
-        document.getElementById('checkOutDay').textContent = checkOutDate.getDate();
-        document.getElementById('checkOutMonth').textContent = 
-            checkOutDate.toLocaleString('default', { month: 'short' }) + ', ' + checkOutDate.getFullYear();
-        document.getElementById('checkOutWeekday').textContent = 
-            checkOutDate.toLocaleString('default', { weekday: 'long' }).toUpperCase();
-
-        // Update minimum check-out date based on check-in date
-        const minCheckOut = new Date(checkInDate);
-        minCheckOut.setDate(minCheckOut.getDate() + 1);
-        document.getElementById('checkOutDate').min = minCheckOut.toISOString().split('T')[0];
-
-        // If check-out date is before check-in date, update it
-        if (checkOutDate <= checkInDate) {
-            document.getElementById('checkOutDate').value = minCheckOut.toISOString().split('T')[0];
-            updateDates(); // Recursive call to update displays
-            return;
-        }
-
-        // Update nights count
-        const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
-        document.getElementById('nightCount').textContent = nights;
-        updatePrice();
+        checkInPicker.querySelector('.date-number').textContent = date.getDate();
+        checkInPicker.querySelector('.month-year').textContent = 
+            date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        checkInPicker.querySelector('.day-name').textContent = 
+            date.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+        
+        // Set minimum date for check-out
+        const minCheckOut = new Date(date);
+        minCheckOut.setDate(date.getDate() + 1);
+        document.querySelector('input[name="check_out"]').min = minCheckOut.toISOString().split('T')[0];
+        
+        // Update nights
+        calculateNights();
     }
+}
+
+function updateDatesFromCheckOut() {
+    const checkOutDate = document.querySelector('input[name="check_out"]').value;
+    if (checkOutDate) {
+        const date = new Date(checkOutDate);
+        const checkOutPicker = date.closest('.check-box');
+        
+        // Update check-out display
+        checkOutPicker.querySelector('.date-number').textContent = date.getDate();
+        checkOutPicker.querySelector('.month-year').textContent = 
+            date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        checkOutPicker.querySelector('.day-name').textContent = 
+            date.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+        
+        // Update nights
+        calculateNights();
+    }
+}
+
+function calculateNights() {
+    const checkIn = new Date(document.querySelector('input[name="check_in"]').value);
+    const checkOut = new Date(document.querySelector('input[name="check_out"]').value);
+    const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+    
+    if (nights > 0) {
+        document.querySelector('input[name="nights"]').value = nights;
+        updateTotal();
+    }
+}
+
+function adjustGuests(change) {
+    const input = document.querySelector('input[name="guests"]');
+    const newValue = parseInt(input.value) + change;
+    if (newValue >= parseInt(input.min) && newValue <= parseInt(input.max)) {
+        input.value = newValue;
+    }
+}
+
+function adjustNights(change) {
+    const input = document.querySelector('input[name="nights"]');
+    const newValue = parseInt(input.value) + change;
+    if (newValue >= parseInt(input.min) && newValue <= parseInt(input.max)) {
+        input.value = newValue;
+        updateDates();
+        updateTotal();
+    }
+}
+
+function updateTotal() {
+    const pricePerNight = {{ room_price }};
+    const nights = document.querySelector('input[name="nights"]').value;
+    const total = pricePerNight * nights;
+    document.querySelector('.total-price h3').textContent = `RS. ${total}/-`;
+}
+
+// Initialize dates on load
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    
+    const checkInInput = document.querySelector('input[name="check_in"]');
+    const checkOutInput = document.querySelector('input[name="check_out"]');
+    
+    checkInInput.valueAsDate = today;
+    checkOutInput.valueAsDate = tomorrow;
+    
+    updateDates();
+    updateDatesFromCheckOut();
+});
 </script>
 {% endblock %} 

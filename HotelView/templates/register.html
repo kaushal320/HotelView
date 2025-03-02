@@ -20,35 +20,44 @@
                     <form method="POST">
                         {% csrf_token %}
                         <div class="field">
-                            <label class="label">Full Name</label>
+                            <label class="label">First Name</label>
                             <div class="control">
-                                <input class="input" type="text" name="fullname" required 
-                                       value="{{ request.POST.fullname|default:'' }}">
+                                <input class="input" type="text" name="first_name" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Last Name</label>
+                            <div class="control">
+                                <input class="input" type="text" name="last_name" required>
                             </div>
                         </div>
 
                         <div class="field">
                             <label class="label">Email</label>
                             <div class="control">
-                                <input class="input" type="email" name="email" required
-                                       value="{{ request.POST.email|default:'' }}">
+                                <input class="input" type="email" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Address</label>
+                            <div class="control">
+                                <textarea class="textarea" name="address" required></textarea>
                             </div>
                         </div>
 
                         <div class="field">
                             <label class="label">Password</label>
                             <div class="control">
-                                <input class="input" type="password" name="password" required
-                                       minlength="8">
+                                <input class="input" type="password" name="password1" required>
                             </div>
-                            <p class="help">Password must be at least 8 characters long</p>
                         </div>
 
                         <div class="field">
                             <label class="label">Confirm Password</label>
                             <div class="control">
-                                <input class="input" type="password" name="confirm_password" required
-                                       minlength="8">
+                                <input class="input" type="password" name="password2" required>
                             </div>
                         </div>
 

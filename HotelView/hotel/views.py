@@ -8,17 +8,19 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.templatetags.static import static
-from .models import Booking
-from datetime import datetime, timedelta
+from .models import Booking, Room, RoomFeature, UserProfile
+from datetime import datetime, timedelta, date
 
 
 
 def home(request):
-    return render(request, 'index.html')
+    rooms = Room.objects.filter(is_available=True)
+    return render(request, 'index.html', {'rooms': rooms})
 
 
 def about(request):
-    return render(request, 'aboutUs.html')
+    rooms = Room.objects.filter(is_available=True)
+    return render(request, 'aboutUs.html', {'rooms': rooms})
 
 
 
@@ -58,53 +60,44 @@ def login_view(request):
     next_url = request.GET.get('next', '')
     return render(request, 'login.html', {'next': next_url})
 
-def register_view(request):
+def register(request):
     if request.method == 'POST':
-        fullname = request.POST.get('fullname')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-
-        # Validate passwords match
-        if password != confirm_password:
-            messages.error(request, 'Passwords do not match!')
-            return render(request, 'register.html')
-
-        # Validate password length
-        if len(password) < 8:
-            messages.error(request, 'Password must be at least 8 characters long!')
-            return render(request, 'register.html')
-
         try:
-            # Check if user already exists
-            if User.objects.filter(email=email).exists():
-                messages.error(request, 'Email already registered!')
+            # Check if passwords match
+            if request.POST['password1'] != request.POST['password2']:
+                messages.error(request, 'Passwords do not match')
                 return render(request, 'register.html')
+
+            # Get form data
+            email = request.POST['email']
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            address = request.POST['address']
+            password = request.POST['password1']
 
             # Create user
             user = User.objects.create_user(
-                username=email,  # Using email as username
+                username=email,
                 email=email,
-                password=password
+                password=password,
+                first_name=first_name,
+                last_name=last_name
             )
-            
-            # Set full name
-            first_name = fullname.split()[0]
-            last_name = ' '.join(fullname.split()[1:]) if len(fullname.split()) > 1 else ''
-            user.first_name = first_name
-            user.last_name = last_name
-            user.save()
 
-            # Log the user in
-            login(request, user)
+            # Create or update profile
+            UserProfile.objects.update_or_create(
+                user=user,
+                defaults={'address': address}
+            )
+
             messages.success(request, 'Registration successful! Please login.')
             return redirect('hotel:login')
 
         except IntegrityError:
-            messages.error(request, 'Username/Email already exists!')
+            messages.error(request, 'This email is already registered')
         except Exception as e:
-            messages.error(request, f'Registration failed: {str(e)}')
-    
+            messages.error(request, f'Registration error: {str(e)}')
+
     return render(request, 'register.html')
 
 @login_required
@@ -114,11 +107,30 @@ def logout_view(request):
     return redirect('hotel:home')
 
 def book(request):
-    page = request.GET.get('page')
-    return render(request, 'book.html', {'page': page})
+    rooms = Room.objects.filter(is_available=True)
+    return render(request, 'book.html', {'rooms': rooms})
 
 @login_required(login_url='hotel:login')
 def booking_form(request):
+    room_type = request.GET.get('room_type')
+    try:
+        room = Room.objects.get(name=room_type)
+        room_features = room.features.all()  # Get all features for this room
+    except Room.DoesNotExist:
+        messages.error(request, 'Room not found')
+        return redirect('hotel:book')
+
+    context = {
+        'room': room,  # Pass the entire room object
+        'room_type': room.name,
+        'room_price': room.price,
+        'max_guests': room.max_guests,
+        'room_rating': room.rating,
+        'room_features': room_features,  # Pass the features
+        'today': date.today(),
+        'user': request.user,
+    }
+    
     if request.method == 'POST':
         # Get form data
         guests = int(request.POST.get('guests'))
@@ -129,16 +141,15 @@ def booking_form(request):
         email = request.POST.get('email')
         address = request.POST.get('address')
         arrival = request.POST.get('arrival')
-        room_type = request.GET.get('room_type')
 
         # Convert arrival string to datetime
-        check_in = datetime.strptime(arrival, '%Y-%m-%dT%H:%M')
+        check_in = datetime.strptime(arrival, '%Y-%m-%d')
         check_out = check_in + timedelta(days=nights)
 
         # Create booking
         booking = Booking.objects.create(
             user=request.user,
-            room_type=room_type,
+            room_type=room.name,
             check_in=check_in,
             check_out=check_out,
             guests=guests,
@@ -152,71 +163,6 @@ def booking_form(request):
 
         messages.success(request, 'Booking completed successfully!')
         return redirect('hotel:booking_confirmation', booking_id=booking.id)
-
-    # Your existing GET logic here
-    room_type = request.GET.get('room_type')
-    
-    # Define room configurations including price, max guests, image and rating
-    room_configs = {
-        'Theater Room': {
-            'price': 500,
-            'max_guests': 2,
-            'image': 'images/theater-room.jpg',
-            'rating': '★★★★★'
-        },
-        'Apartment': {
-            'price': 5000,
-            'max_guests': 6,
-            'image': 'images/apartment.jpg',
-            'rating': '★★★★★'
-        },
-        'Family Room': {
-            'price': 4000,
-            'max_guests': 4,
-            'image': 'images/family-room.jpg',
-            'rating': '★★★★★'
-        },
-        'Double Room': {
-            'price': 3000,
-            'max_guests': 2,
-            'image': 'images/double-room.jpg',
-            'rating': '★★★★☆'
-        },
-        'Small Room': {
-            'price': 2000,
-            'max_guests': 1,
-            'image': 'images/small-room.jpg',
-            'rating': '★★★★☆'
-        },
-        'Luxury Room': {
-            'price': 5000,
-            'max_guests': 2,
-            'image': 'images/luxury-room.jpg',
-            'rating': '★★★★★'
-        }
-    }
-
-    # Get room configuration or use default values
-    room_config = room_configs.get(room_type, {
-        'price': 4000,
-        'max_guests': 2,
-        'image': 'images/default-room.jpg',
-        'rating': '★★★★☆'
-    })
-
-    context = {
-        'room_type': room_type,
-        'room_price': room_config['price'],
-        'max_guests': room_config['max_guests'],
-        'room_image': room_config['image'],
-        'room_rating': room_config['rating'],
-        'check_in_day': '16',
-        'check_in_month': 'Dec, 2024',
-        'check_in_weekday': 'TUESDAY',
-        'check_out_day': '16',
-        'check_out_month': 'Dec, 2024',
-        'check_out_weekday': 'TUESDAY',
-    }
     
     return render(request, 'booking_form.html', context)
 
@@ -226,146 +172,9 @@ def booking_confirmation(request, booking_id):
     return render(request, 'booking_confirmation.html', {'booking': booking})
 
 def room_detail(request, room_slug):
-    # Room configurations with detailed information
-    room_configs = {
-        'double-room': {
-            'name': 'Double Room',
-            'image': 'images/double-room.jpg',
-            'additional_images': [
-                'images/double-room.jpg',
-                'images/double-room.jpg',
-                'images/double-room.jpg'
-            ],
-            'price': 3000,
-            'rating': '★★★★☆',
-            'beds': 2,
-            'max_guests': 2,
-            'size': 300,
-            'description': 'The Double Room is a cozy 25 ft² accommodation designed to comfortably host up to two guests, making it an ideal choice for couples or solo travelers. Priced at Rs 3000 per night, this room offers the perfect blend of affordability and comfort. It features modern amenities, stylish furnishings, and a peaceful ambiance to ensure a relaxing and enjoyable stay. ',
-            'features': [
-                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
-                {'name': 'Room Service', 'icon': 'fas fa-concierge-bell'},
-            ],
-            'slug': 'double-room'
-        },
-        'luxury-room': {
-            'name': 'Luxury Room',
-            'image': 'images/luxury-room.jpg',
-            'additional_images': [
-                'images/luxury-room.jpg',
-                'images/luxury-room.jpg',
-                'images/luxury-room.jpg'
-            ],
-            'price': 5000,
-            'rating': '★★★★★',
-            'beds': 1,
-            'max_guests': 2,
-            'size': 400,
-            'description': 'The Luxury Room is an elegant 20 ft² accommodation designed to host up to two guests, offering a perfect blend of sophistication and comfort. Priced at Rs 5000 per night, this room is ideal for travelers seeking a premium experience.Featuring high-end furnishings, modern amenities, and a serene ambiance, the Luxury Room provides an exceptional setting for relaxation and indulgence.',
-            'features': [
-                {'name': 'Luxury Bathroom', 'icon': 'fas fa-hot-tub'},
-                {'name': 'Room Service', 'icon': 'fas fa-concierge-bell'},
-                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
-            ],
-            
-            'slug': 'luxury-room'
-        },
-        'family-room': {
-            'name': 'Family Room',
-            'image': 'images/family-room.jpg',
-            'additional_images': [
-                'images/family-room.jpg',
-                'images/family-room.jpg',
-                'images/family-room.jpg'
-            ],
-            'price': 4000,
-            'rating': '★★★★★',
-            'beds': 4,
-            'max_guests': 4,
-            'size': 500,
-            'description': 'The Family Room is a spacious 30 ft² accommodation designed to comfortably host up to four guests, making it an ideal choice for families or small groups. Priced at Rs.4,000 per night, the room combines comfort, style, and affordability. Guests staying for an extended period can enjoy a special discounted weekly rate, perfect for longer vacations or business stays.',
-            'features': [
-                {'name': 'Family Space', 'icon': 'fas fa-users'},
-                {'name': 'Kids Corner', 'icon': 'fas fa-baby'},
-                {'name': 'Entertainment', 'icon': 'fas fa-tv'},
-                {'name': 'Room Service', 'icon': 'fas fa-concierge-bell'},
-                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
-            ],
-            'slug': 'family-room'
-        },
-        'small-room': {
-            'name': 'Small Room',
-            'image': 'images/small-room.jpg',
-            'additional_images': [
-                'images/small-room.jpg',
-                'images/small-room.jpg',
-                'images/small-room.jpg'
-            ],
-            'price': 2000,
-            'rating': '★★★★☆',
-            'beds': 1,
-            'max_guests': 1,
-            'description': 'The Small Room is a compact and cozy 15 ft² accommodation designed for one guest, offering comfort and convenience at an affordable price. Priced at Rs 2000 per night, this room is perfect for solo travelers, students, or business guests seeking a budget-friendly option. Despite its size, the room features essential amenities, comfortable furnishings, and a peaceful atmosphere to ensure a pleasant stay..',
-            'features': [
-                {'name': 'Single Bed', 'icon': 'fas fa-bed'},
-                {'name': 'Room Service', 'icon': 'fas fa-concierge-bell'},
-                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
-            ],
-            'slug': 'small-room'
-        },
-        'apartment': {
-            'name': 'Apartment',
-            'image': 'images/apartment.jpg',
-            'additional_images': [
-                'images/apartment.jpg',
-                'images/apartment.jpg',
-                'images/apartment.jpg'
-            ],
-            'price': 7000,
-            'rating': '★★★★★',
-            'beds': 4,
-            'max_guests': 8,
-            'size': 800,
-            'description': 'The Apartment is a spacious 70 ft² accommodation, perfect for those seeking a home-like experience during their stay. Priced at Rs 7000 per night, this apartment offers ample space, ideal for families, small groups, or extended stays. It features modern furnishings, a fully equipped kitchenette, and all the amenities needed for comfort and convenience. Whether you are on a business trip, vacation, or looking for a longer stay, the Apartment provides a cozy, private retreat with everything you need for a memorable and relaxing experience.',
-            'features': [
-                {'name': 'Full Kitchen', 'icon': 'fas fa-utensils'},
-                {'name': 'Living Room', 'icon': 'fas fa-couch'},
-                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
-            ],
-            'slug': 'apartment'
-        },
-        'theater-room': {
-            'name': 'Theater Room',
-            'image': 'images/theater-room.jpg',
-            'additional_images': [
-                'images/theater-room.jpg',
-                'images/theater-room.jpg',
-                'images/theater-room.jpg'
-            ],
-            'price': 500,
-            'rating': '★★★★★',
-            'beds': 4,
-            'max_guests': 4,
-            'size': 350,
-            'description': 'The Theater Room is a luxurious 70 ft² space, designed to provide an immersive cinematic experience. Priced at Rs 5000 per night, this room is perfect for movie enthusiasts, families, or groups who want to enjoy a private theater experience. It is equipped with high-quality sound systems, a large screen, and comfortable seating, ensuring a premium viewing experience. Whether you are hosting a movie night, enjoying your favorite shows, or having a special event, the Theater Room offers an exceptional setting for entertainment and relaxation. With its modern amenities and cozy atmosphere, its the perfect retreat for a memorable cinematic experience.',
-            'features': [
-                {'name': 'Projector Screen', 'icon': 'fas fa-film'},
-                {'name': 'Surround Sound', 'icon': 'fas fa-volume-up'},
-                {'name': 'Movie Library', 'icon': 'fas fa-server'},
-                {'name': 'Air Conditioning', 'icon': 'fas fa-snowflake'},
-                {'name': 'Food Service', 'icon': 'fas fa-concierge-bell'}
-            ],
-            'slug': 'theater-room'
-        }
-    }
-
-    room = room_configs.get(room_slug)
-    if not room:
-        return redirect('hotel:home')
-
-    # Get similar rooms (excluding current room)
-    similar_rooms = [r for slug, r in room_configs.items() if slug != room_slug][:3]
-
+    room = get_object_or_404(Room, slug=room_slug)
+    similar_rooms = Room.objects.exclude(id=room.id)[:3]
+    
     context = {
         'room': room,
         'similar_rooms': similar_rooms
