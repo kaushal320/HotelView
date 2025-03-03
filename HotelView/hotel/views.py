@@ -12,6 +12,7 @@ from .models import Booking, Room, RoomFeature, UserProfile
 from datetime import datetime, timedelta, date
 from django.db.models import Q
 from django.http import JsonResponse
+from django.http import HttpResponseRedirect
 
 
 
@@ -118,6 +119,16 @@ def booking_form(request):
     try:
         room = Room.objects.get(name=room_type)
         room_features = room.features.all()  # Get all features for this room
+        
+        # Get count of bookings for this room type by the current user
+        same_room_bookings = Booking.objects.filter(
+            user=request.user,
+            room=room
+        ).count()
+        
+        # Get total count of bookings by the current user
+        user_booking_count = Booking.objects.filter(user=request.user).count()
+        
     except Room.DoesNotExist:
         messages.error(request, 'Room not found')
         return redirect('hotel:book')
@@ -131,40 +142,96 @@ def booking_form(request):
         'room_features': room_features,  # Pass the features
         'today': date.today(),
         'user': request.user,
+        'user_booking_count': user_booking_count,
+        'same_room_bookings': same_room_bookings,
     }
     
     if request.method == 'POST':
-        # Get form data
-        guests = int(request.POST.get('guests'))
-        nights = int(request.POST.get('nights'))
-        total_price = request.POST.get('total_price')
-        name = request.POST.get('name')
-        surname = request.POST.get('surname')
-        email = request.POST.get('email')
-        address = request.POST.get('address')
-        arrival = request.POST.get('arrival')
+        try:
+            # Check if user has already booked this room type 3 times
+            if same_room_bookings >= 3:
+                messages.error(request, f'You have already booked {room.name} 3 times. Please choose a different room type.')
+                return render(request, 'booking_form.html', context)
+            
+            # Check if user has reached overall booking limit
+            if user_booking_count >= 3:
+                messages.error(request, 'You have reached the maximum limit of 3 rooms. Please complete or cancel existing bookings before making new ones.')
+                return render(request, 'booking_form.html', context)
+            
+            # Get form data
+            arrival = request.POST.get('arrival')
+            if not arrival:
+                messages.error(request, 'Please select a check-in date')
+                return render(request, 'booking_form.html', context)
 
-        # Convert arrival string to datetime
-        check_in = datetime.strptime(arrival, '%Y-%m-%d')
-        check_out = check_in + timedelta(days=nights)
+            guests = request.POST.get('guests')
+            if not guests:
+                messages.error(request, 'Please specify the number of guests')
+                return render(request, 'booking_form.html', context)
 
-        # Create booking
-        booking = Booking.objects.create(
-            user=request.user,
-            room_type=room.name,
-            check_in=check_in,
-            check_out=check_out,
-            guests=guests,
-            nights=nights,
-            total_price=total_price,
-            name=name,
-            surname=surname,
-            email=email,
-            address=address
-        )
+            nights = request.POST.get('nights')
+            if not nights:
+                messages.error(request, 'Please specify the number of nights')
+                return render(request, 'booking_form.html', context)
 
-        messages.success(request, 'Booking completed successfully!')
-        return redirect('hotel:booking_confirmation', booking_id=booking.id)
+            name = request.POST.get('name')
+            if not name:
+                messages.error(request, 'Please enter your first name')
+                return render(request, 'booking_form.html', context)
+
+            surname = request.POST.get('surname')
+            if not surname:
+                messages.error(request, 'Please enter your last name')
+                return render(request, 'booking_form.html', context)
+
+            email = request.POST.get('email')
+            if not email:
+                messages.error(request, 'Please enter your email address')
+                return render(request, 'booking_form.html', context)
+
+            address = request.POST.get('address')
+            if not address:
+                messages.error(request, 'Please enter your address')
+                return render(request, 'booking_form.html', context)
+
+            # Convert values to appropriate types
+            guests = int(guests)
+            nights = int(nights)
+
+            # Convert arrival string to datetime
+            check_in = datetime.strptime(arrival, '%Y-%m-%d')
+            check_out = check_in + timedelta(days=nights)
+
+            # Validate dates
+            if check_in.date() < date.today():
+                messages.error(request, 'Check-in date cannot be in the past')
+                return render(request, 'booking_form.html', context)
+
+            # Create booking
+            booking = Booking.objects.create(
+                user=request.user,
+                room=room,  # Add the room object
+                room_type=room.name,  # Keep this for backward compatibility
+                check_in=check_in,
+                check_out=check_out,
+                guests=guests,
+                nights=nights,
+                total_price=room.price * nights,
+                name=name,
+                surname=surname,
+                email=email,
+                address=address
+            )
+
+            messages.success(request, 'Booking completed successfully!')
+            return redirect('hotel:booking_confirmation', booking_id=booking.id)
+
+        except ValueError as e:
+            messages.error(request, f'Invalid input: {str(e)}')
+            return render(request, 'booking_form.html', context)
+        except Exception as e:
+            messages.error(request, f'An error occurred: {str(e)}')
+            return render(request, 'booking_form.html', context)
     
     return render(request, 'booking_form.html', context)
 
@@ -217,3 +284,89 @@ def search_rooms_api(request):
         
         return JsonResponse(results, safe=False)
     return JsonResponse([], safe=False)
+
+@login_required
+def user_bookings(request):
+    bookings = Booking.objects.filter(user=request.user).select_related('room').order_by('-created_at')
+    today = date.today()
+    return render(request, 'user_bookings.html', {'bookings': bookings, 'today': today})
+
+@login_required
+def edit_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    
+    if request.method == 'POST':
+        try:
+            # Get form data
+            arrival = request.POST.get('arrival')
+            if not arrival:
+                messages.error(request, 'Please select a check-in date')
+                return redirect('hotel:edit_booking', booking_id=booking_id)
+
+            guests = request.POST.get('guests')
+            if not guests:
+                messages.error(request, 'Please specify the number of guests')
+                return redirect('hotel:edit_booking', booking_id=booking_id)
+
+            nights = request.POST.get('nights')
+            if not nights:
+                messages.error(request, 'Please specify the number of nights')
+                return redirect('hotel:edit_booking', booking_id=booking_id)
+
+            # Convert values to appropriate types
+            guests = int(guests)
+            nights = int(nights)
+
+            # Convert arrival string to datetime
+            check_in = datetime.strptime(arrival, '%Y-%m-%d')
+            check_out = check_in + timedelta(days=nights)
+
+            # Validate dates
+            if check_in.date() < date.today():
+                messages.error(request, 'Check-in date cannot be in the past')
+                return redirect('hotel:edit_booking', booking_id=booking_id)
+
+            # Calculate total price based on room price and nights
+            total_price = booking.room.price * nights
+
+            # Update booking
+            booking.check_in = check_in
+            booking.check_out = check_out
+            booking.guests = guests
+            booking.nights = nights
+            booking.total_price = total_price
+            booking.save()
+
+            messages.success(request, 'Booking updated successfully!')
+            return redirect('hotel:booking_detail', booking_id=booking.id)
+
+        except ValueError as e:
+            messages.error(request, f'Invalid input: {str(e)}')
+            return redirect('hotel:edit_booking', booking_id=booking_id)
+        except Exception as e:
+            messages.error(request, f'An error occurred: {str(e)}')
+            return redirect('hotel:edit_booking', booking_id=booking_id)
+
+    context = {
+        'booking': booking,
+        'room': booking.room,
+        'today': date.today(),
+    }
+    return render(request, 'edit_booking.html', context)
+
+@login_required
+def delete_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    
+    if request.method == 'POST':
+        booking.delete()
+        messages.success(request, 'Booking cancelled successfully!')
+        return redirect('hotel:user_bookings')
+    
+    return render(request, 'delete_booking.html', {'booking': booking})
+
+@login_required
+def booking_detail(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    today = date.today()
+    return render(request, 'booking_detail.html', {'booking': booking, 'today': today})

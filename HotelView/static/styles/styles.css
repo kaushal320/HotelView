@@ -1516,6 +1516,7 @@
       display: flex;
       padding: 1.5rem;
       border-bottom: 1px solid rgba(179, 139, 89, 0.2);
+      padding-left: 0px;
   }
 
   .date-item {

@@ -14,26 +14,6 @@ class ContactSubmission(models.Model):
     def __str__(self):
         return f"{self.name} - {self.email}"
 
-class Booking(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    room_type = models.CharField(max_length=100)
-    check_in = models.DateTimeField()
-    check_out = models.DateTimeField()
-    guests = models.IntegerField()
-    nights = models.IntegerField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    name = models.CharField(max_length=100)
-    surname = models.CharField(max_length=100)
-    email = models.EmailField()
-    address = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.room_type} booking by {self.name} {self.surname}"
-
-    class Meta:
-        ordering = ['-created_at']
-
 class Room(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
@@ -50,6 +30,27 @@ class Room(models.Model):
 
     def __str__(self):
         return self.name
+
+class Booking(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True, blank=True)  # Allow null initially
+    room_type = models.CharField(max_length=100)  # Keep for backward compatibility
+    check_in = models.DateTimeField()
+    check_out = models.DateTimeField()
+    guests = models.IntegerField()
+    nights = models.IntegerField()
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    name = models.CharField(max_length=100)
+    surname = models.CharField(max_length=100)
+    email = models.EmailField()
+    address = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.room.name if self.room else self.room_type} booking by {self.name} {self.surname}"
+
+    class Meta:
+        ordering = ['-created_at']
 
 class RoomFeature(models.Model):
     room = models.ForeignKey(Room, related_name='features', on_delete=models.CASCADE)

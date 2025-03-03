@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Booking - HotelView{% endblock %}
+
+{% block content %}
+<div class="edit-booking-section">
+    <div class="edit-booking-header">
+        <h1>Edit Booking</h1>
+    </div>
+
+    <div class="edit-booking-container">
+        <div class="booking-preview">
+            {% if booking.room and booking.room.image %}
+                <img src="{{ booking.room.image.url }}" alt="{{ booking.room.name }}">
+            {% endif %}
+            <div class="room-info">
+                <h3>{% if booking.room %}{{ booking.room.name }}{% else %}{{ booking.room_type }}{% endif %}</h3>
+                <p class="price">Rs. {{ booking.room.price }} per night</p>
+            </div>
+        </div>
+
+        <form method="post" class="edit-booking-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="arrival">Check-in Date</label>
+                <input type="date" id="arrival" name="arrival" value="{{ booking.check_in|date:'Y-m-d' }}" min="{{ today|date:'Y-m-d' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nights">Number of Nights</label>
+                <input type="number" id="nights" name="nights" value="{{ booking.nights }}" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="guests">Number of Guests</label>
+                <input type="number" id="guests" name="guests" value="{{ booking.guests }}" min="1" max="{{ booking.room.max_guests }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Total Price</label>
+                <div class="total-price-display">Rs. <span id="totalPrice">{{ booking.total_price }}</span></div>
+                <input type="hidden" name="total_price" id="totalPriceInput" value="{{ booking.total_price }}">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="save-button">Save Changes</button>
+                <a href="{% url 'hotel:booking_detail' booking.id %}" class="cancel-button">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const nightsInput = document.getElementById('nights');
+    const totalPriceDisplay = document.getElementById('totalPrice');
+    const totalPriceInput = document.getElementById('totalPriceInput');
+    const roomPrice = {{ booking.room.price }};
+
+    function updateTotalPrice() {
+        const nights = parseInt(nightsInput.value) || 0;
+        const total = nights * roomPrice;
+        totalPriceDisplay.textContent = total;
+        totalPriceInput.value = total;
+    }
+
+    nightsInput.addEventListener('change', updateTotalPrice);
+    updateTotalPrice(); // Initial calculation
+});
+</script>
+
+<style>
+.edit-booking-section {
+    padding: 80px 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.edit-booking-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.edit-booking-header h1 {
+    color: #b38b59;
+    font-size: 2.5rem;
+    font-weight: 500;
+}
+
+.edit-booking-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    background: #262626;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.booking-preview {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.booking-preview img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.room-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: #fff;
+}
+
+.room-info h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.room-info .price {
+    margin: 5px 0 0;
+    font-size: 1.1rem;
+    color: #b38b59;
+}
+
+.edit-booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: #fff;
+    font-size: 1rem;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid rgba(179, 139, 89, 0.3);
+    border-radius: 4px;
+    background: #333;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #b38b59;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.save-button,
+.cancel-button {
+    padding: 12px 25px;
+    border-radius: 4px;
+    font-size: 1rem;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.save-button {
+    background: #b38b59;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background: #96744b;
+}
+
+.cancel-button {
+    background: #333;
+    color: #fff;
+}
+
+.cancel-button:hover {
+    background: #444;
+}
+
+@media (max-width: 768px) {
+    .edit-booking-container {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-preview img {
+        height: 200px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .save-button,
+    .cancel-button {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %} 

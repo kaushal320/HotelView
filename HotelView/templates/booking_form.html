@@ -26,28 +26,21 @@
                     <div class="check-box">
                         <h3>CHECK-IN</h3>
                         <div class="date-picker">
-                            <div class="date-number">2</div>
-                            <div class="date-details">
-                                <div class="month-year">Mar 2025</div>
-                                <div class="day-name">SUNDAY</div>
-                            </div>
-                            <input type="date" name="check_in" required min="{{ today|date:'Y-m-d' }}" 
-                                   class="date-input" onchange="updateDates()">
+                            <input type="date" name="check_in" class="calendar-input" min="{{ today|date:'Y-m-d' }}">
                         </div>
                     </div>
                     <div class="check-box">
                         <h3>CHECK-OUT</h3>
                         <div class="date-picker">
-                            <div class="date-number">3</div>
-                            <div class="date-details">
-                                <div class="month-year">Mar 2025</div>
-                                <div class="day-name">MONDAY</div>
-                            </div>
-                            <input type="date" name="check_out" required 
-                                   class="date-input" onchange="updateDatesFromCheckOut()">
+                            <input type="date" name="check_out" class="calendar-input" min="{{ today|date:'Y-m-d' }}">
                         </div>
                     </div>
                 </div>
+                {% if user_booking_count >= 3 %}
+                <div class="error-message" style="display: block;">
+                    <i class="fas fa-exclamation-circle"></i> You have reached the maximum limit of 3 rooms. Please complete or cancel existing bookings before making new ones.
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -56,37 +49,37 @@
     <div class="booking-form">
         <div class="form-section">
             <h3>Guest Information</h3>
-            <form method="POST" id="booking-form">
+            <form method="POST" id="booking-form" {% if user_booking_count >= 3 %}disabled{% endif %}>
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="form-group">
                         <label>First Name</label>
-                        <input type="text" name="name" value="{{ user.first_name }}" required>
+                        <input type="text" name="name" value="{{ user.first_name }}" required {% if user_booking_count >= 3 %}disabled{% endif %}>
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
-                        <input type="text" name="surname" value="{{ user.last_name }}" required>
+                        <input type="text" name="surname" value="{{ user.last_name }}" required {% if user_booking_count >= 3 %}disabled{% endif %}>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" name="email" value="{{ user.email }}" required>
+                    <input type="email" name="email" value="{{ user.email }}" required {% if user_booking_count >= 3 %}disabled{% endif %}>
                 </div>
 
                 <div class="form-group">
                     <label>Address</label>
-                    <textarea name="address" required>{{ user.profile.address }}</textarea>
+                    <textarea name="address" required {% if user_booking_count >= 3 %}disabled{% endif %}>{{ user.profile.address }}</textarea>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Number of Nights</label>
-                        <input type="number" name="nights" min="1" max="30" value="1" required onchange="updateTotal()">
+                        <input type="number" name="nights" min="1" max="30" value="1" required {% if user_booking_count >= 3 %}disabled{% endif %}>
                     </div>
                     <div class="form-group">
                         <label>Number of Guests</label>
-                        <input type="number" name="guests" min="1" max="{{ max_guests }}" value="1" required>
+                        <input type="number" name="guests" min="1" max="{{ max_guests }}" value="1" required {% if user_booking_count >= 3 %}disabled{% endif %}>
                     </div>
                 </div>
 
@@ -96,7 +89,13 @@
                 <input type="hidden" name="total_price" id="totalPrice" value="{{ room_price }}">
                 <input type="hidden" name="arrival" value="">
 
-                <button type="submit" class="book-button">Confirm Booking</button>
+                <button type="submit" class="book-button" {% if user_booking_count >= 3 %}disabled{% endif %}>
+                    {% if user_booking_count >= 3 %}
+                        Maximum Bookings Reached
+                    {% else %}
+                        Confirm Booking
+                    {% endif %}
+                </button>
             </form>
         </div>
     </div>
@@ -111,10 +110,10 @@ body {
 
 .booking-container {
     display: grid;
-    grid-template-columns: 400px 1fr;
-    gap: 30px;
-    padding: 30px;
-    max-width: 1200px;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 
@@ -122,31 +121,43 @@ body {
     background: #262626;
     border-radius: 8px;
     overflow: hidden;
+    width: 100%;
+    margin: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.room-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
 }
 
 .room-image img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: block;
 }
 
 .room-info-box {
-    padding: 20px;
+    padding: 5px;
 }
 
 .room-info-box h2 {
     color: #b38b59;
-    margin: 0 0 10px 0;
-    font-size: 22px;
+    margin: 0 0 15px 0;
+    font-size: 24px;
 }
 
 .room-price {
     color: #fff;
-    font-size: 20px;
-    margin-bottom: 15px;
+    font-size: 22px;
+    margin-bottom: 20px;
 }
 
 .room-price span {
-    font-size: 14px;
+    font-size: 16px;
     opacity: 0.7;
 }
 
@@ -155,7 +166,7 @@ body {
     justify-content: space-between;
     align-items: center;
     color: #fff;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .guest-info i {
@@ -171,8 +182,8 @@ body {
 
 .form-section h3 {
     color: #b38b59;
-    margin: 0 0 20px 0;
-    font-size: 20px;
+    margin: 0 0 25px 0;
+    font-size: 24px;
 }
 
 .form-row {
@@ -188,44 +199,44 @@ body {
 .form-group label {
     display: block;
     color: #fff;
-    margin-bottom: 5px;
-    font-size: 14px;
+    margin-bottom: 10px;
+    font-size: 18px;
 }
 
 .form-group input,
 .form-group textarea {
     width: 100%;
-    padding: 8px 12px;
+    padding: 15px;
     background: #1a1a1a;
     border: 1px solid #333;
     border-radius: 4px;
     color: #fff;
-    font-size: 14px;
+    font-size: 18px;
 }
 
 .form-group textarea {
-    height: 80px;
+    height: 120px;
     resize: vertical;
 }
 
 .total {
     background: #1a1a1a;
     color: #fff;
-    padding: 12px 15px;
+    padding: 20px;
     border-radius: 4px;
-    margin: 20px 0;
-    font-size: 18px;
+    margin: 25px 0;
+    font-size: 24px;
     text-align: right;
 }
 
 .book-button {
     width: 100%;
-    padding: 12px;
+    padding: 18px;
     background: #b38b59;
     color: #fff;
     border: none;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 20px;
     cursor: pointer;
     transition: background 0.3s ease;
 }
@@ -252,68 +263,64 @@ body {
 }
 
 .booking-dates {
-    margin-top: 20px;
-    padding-top: 20px;
+    margin-top: 15px;
+    padding-top: 15px;
     border-top: 1px solid #333;
 }
 
 .check-dates {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 8px;
+    margin: 0 -5px;
+}
+
+.check-box {
+    width: 100%;
+   
+    padding-left: 0px;
 }
 
 .check-box h3 {
     color: #b38b59;
     font-size: 14px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
 }
 
 .date-picker {
     background: #1a1a1a;
-    padding: 15px;
+    padding: 5px;
     border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    cursor: pointer;
-    position: relative;
+    width: 100%;
 }
 
-.date-number {
-    font-size: 36px;
-    color: #fff;
-    font-weight: bold;
-}
-
-.date-details {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.month-year {
+.calendar-input {
+    width: 100%;
+    padding: 8px;
+    background: #262626;
+    border: 1px solid #333;
+    border-radius: 4px;
     color: #fff;
     font-size: 16px;
-}
-
-.day-name {
-    color: #b38b59;
-    font-size: 14px;
-}
-
-.date-input {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
     cursor: pointer;
 }
 
-.date-picker:hover {
-    background: #262626;
+.calendar-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    padding: 2px;
+    width: 18px;
+    height: 18px;
+}
+
+.calendar-input::-webkit-calendar-picker-indicator:hover {
+    opacity: 0.8;
+}
+
+.calendar-input:focus {
+    outline: none;
+    border-color: #b38b59;
 }
 
 .stay-details {
@@ -365,100 +372,243 @@ body {
     gap: 10px;
     margin: 20px 0;
 }
+
+.date-info {
+    font-size: 12px;
+    color: #b38b59;
+    margin-top: 5px;
+}
+
+.booking-rules {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(179, 139, 89, 0.1);
+    border-radius: 4px;
+}
+
+.booking-rules p {
+    color: #b38b59;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.booking-rules ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.booking-rules li {
+    color: #fff;
+    font-size: 13px;
+    margin-bottom: 5px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.booking-rules li:before {
+    content: "•";
+    color: #b38b59;
+    position: absolute;
+    left: 0;
+}
+
+.error-message {
+    color: #ff6b6b;
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.error-message i {
+    font-size: 16px;
+}
+
+button:disabled {
+    background: #666 !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+input:disabled, textarea:disabled {
+    background: #333 !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
 </style>
 
 <script>
-function updateDates() {
-    const checkInDate = document.querySelector('input[name="check_in"]').value;
-    if (checkInDate) {
-        const date = new Date(checkInDate);
-        const checkInPicker = date.closest('.check-box');
+// Create a namespace for our booking functions
+const BookingForm = {
+    userBookingCount: "{{ user_booking_count }}",
+    basePrice: "{{ room_price }}",
+    roomType: "{{ room_type }}",
+    sameRoomBookings: "{{ same_room_bookings }}",
+
+    // Update total price based on number of nights
+    updateTotal: function() {
+        const nightsInput = document.querySelector('input[name="nights"]');
+        const totalAmountDisplay = document.getElementById('totalAmount');
+        const totalPriceInput = document.getElementById('totalPrice');
+        const basePrice = parseInt(this.basePrice);
+        const checkInInput = document.querySelector('input[name="check_in"]');
+        const checkOutInput = document.querySelector('input[name="check_out"]');
         
-        // Update check-in display
-        checkInPicker.querySelector('.date-number').textContent = date.getDate();
-        checkInPicker.querySelector('.month-year').textContent = 
-            date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-        checkInPicker.querySelector('.day-name').textContent = 
-            date.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+        const nights = parseInt(nightsInput.value) || 0;
+        const total = basePrice + (nights - 1) * 500; // Add 500 for each additional night
         
-        // Set minimum date for check-out
-        const minCheckOut = new Date(date);
-        minCheckOut.setDate(date.getDate() + 1);
-        document.querySelector('input[name="check_out"]').min = minCheckOut.toISOString().split('T')[0];
+        // Update checkout date based on number of nights
+        if (checkInInput.value) {
+            const checkInDate = new Date(checkInInput.value);
+            const checkOutDate = new Date(checkInDate);
+            checkOutDate.setDate(checkInDate.getDate() + nights);
+            checkOutInput.value = checkOutDate.toISOString().split('T')[0];
+        }
         
-        // Update nights
-        calculateNights();
-    }
-}
+        totalAmountDisplay.textContent = total;
+        totalPriceInput.value = total;
+    },
 
-function updateDatesFromCheckOut() {
-    const checkOutDate = document.querySelector('input[name="check_out"]').value;
-    if (checkOutDate) {
-        const date = new Date(checkOutDate);
-        const checkOutPicker = date.closest('.check-box');
+    validateBooking: function(checkIn, checkOut) {
+        const today = new Date();
+        const minBookingDate = new Date(today);
+        minBookingDate.setDate(today.getDate() + 1); // Minimum 1 day advance booking
+
+        const checkInDate = new Date(checkIn);
+        const checkOutDate = new Date(checkOut);
+
+        // Check if user has reached booking limit for this room type
+        if (parseInt(this.sameRoomBookings) >= 3) {
+            this.showError(`You have already booked ${this.roomType} 3 times. Please choose a different room type.`);
+            return false;
+        }
+
+        // Check if user has reached overall booking limit
+        if (parseInt(this.userBookingCount) >= 3) {
+            this.showError('You have reached the maximum limit of 3 rooms. Please complete or cancel existing bookings before making new ones.');
+            return false;
+        }
+
+        // Check if booking is at least 1 day in advance
+        if (checkInDate < minBookingDate) {
+            this.showError('Check-in date must be at least 1 day in advance');
+            return false;
+        }
+
+        // Check if stay is within limits (1-30 nights)
+        const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+        if (nights < 1 || nights > 30) {
+            this.showError('Stay must be between 1 and 30 nights');
+            return false;
+        }
+
+        return true;
+    },
+
+    showError: function(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
         
-        // Update check-out display
-        checkOutPicker.querySelector('.date-number').textContent = date.getDate();
-        checkOutPicker.querySelector('.month-year').textContent = 
-            date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-        checkOutPicker.querySelector('.day-name').textContent = 
-            date.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+        const existingError = document.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
         
-        // Update nights
-        calculateNights();
+        document.querySelector('.booking-dates').appendChild(errorDiv);
+        errorDiv.style.display = 'block';
+    },
+
+    calculateNights: function() {
+        const checkIn = document.querySelector('input[name="check_in"]').value;
+        const checkOut = document.querySelector('input[name="check_out"]').value;
+        
+        if (checkIn && checkOut) {
+            if (this.validateBooking(checkIn, checkOut)) {
+                const checkInDate = new Date(checkIn);
+                const checkOutDate = new Date(checkOut);
+                const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+                
+                if (nights > 0) {
+                    document.querySelector('input[name="nights"]').value = nights;
+                    this.updateTotal();
+                }
+            }
+        }
+    },
+
+    // Initialize the form
+    init: function() {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        
+        const checkInInput = document.querySelector('input[name="check_in"]');
+        const checkOutInput = document.querySelector('input[name="check_out"]');
+        const arrivalInput = document.querySelector('input[name="arrival"]');
+        const nightsInput = document.querySelector('input[name="nights"]');
+        
+        const todayStr = today.toISOString().split('T')[0];
+        const tomorrowStr = tomorrow.toISOString().split('T')[0];
+        
+        checkInInput.value = todayStr;
+        checkOutInput.value = tomorrowStr;
+        arrivalInput.value = todayStr;
+        
+        // Set minimum dates
+        checkInInput.min = todayStr;
+        checkOutInput.min = tomorrowStr;
+        
+        // Add event listeners
+        checkInInput.addEventListener('change', () => {
+            const checkInDate = new Date(checkInInput.value);
+            const nights = parseInt(nightsInput.value) || 1;
+            
+            // Update minimum check-out date
+            const minCheckOutDate = new Date(checkInDate);
+            minCheckOutDate.setDate(checkInDate.getDate() + 1);
+            checkOutInput.min = minCheckOutDate.toISOString().split('T')[0];
+            
+            // Update check-out date based on current nights
+            const newCheckOutDate = new Date(checkInDate);
+            newCheckOutDate.setDate(checkInDate.getDate() + nights);
+            checkOutInput.value = newCheckOutDate.toISOString().split('T')[0];
+            
+            this.updateTotal();
+        });
+        
+        checkOutInput.addEventListener('change', () => {
+            this.calculateNights();
+        });
+
+        // Add event listener for nights input
+        nightsInput.addEventListener('change', () => {
+            const checkInDate = new Date(checkInInput.value);
+            const nights = parseInt(nightsInput.value) || 1;
+            
+            // Update check-out date based on new number of nights
+            const newCheckOutDate = new Date(checkInDate);
+            newCheckOutDate.setDate(checkInDate.getDate() + nights);
+            checkOutInput.value = newCheckOutDate.toISOString().split('T')[0];
+            
+            this.updateTotal();
+        });
+        
+        this.updateTotal();
     }
-}
+};
 
-function calculateNights() {
-    const checkIn = new Date(document.querySelector('input[name="check_in"]').value);
-    const checkOut = new Date(document.querySelector('input[name="check_out"]').value);
-    const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
-    
-    if (nights > 0) {
-        document.querySelector('input[name="nights"]').value = nights;
-        updateTotal();
-    }
-}
-
-function adjustGuests(change) {
-    const input = document.querySelector('input[name="guests"]');
-    const newValue = parseInt(input.value) + change;
-    if (newValue >= parseInt(input.min) && newValue <= parseInt(input.max)) {
-        input.value = newValue;
-    }
-}
-
-function adjustNights(change) {
-    const input = document.querySelector('input[name="nights"]');
-    const newValue = parseInt(input.value) + change;
-    if (newValue >= parseInt(input.min) && newValue <= parseInt(input.max)) {
-        input.value = newValue;
-        updateDates();
-        updateTotal();
-    }
-}
-
-function updateTotal() {
-    const pricePerNight = {{ room_price }};
-    const nights = document.querySelector('input[name="nights"]').value;
-    const total = pricePerNight * nights;
-    document.querySelector('.total-price h3').textContent = `RS. ${total}/-`;
-}
-
-// Initialize dates on load
+// Initialize when the DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-    
-    const checkInInput = document.querySelector('input[name="check_in"]');
-    const checkOutInput = document.querySelector('input[name="check_out"]');
-    
-    checkInInput.valueAsDate = today;
-    checkOutInput.valueAsDate = tomorrow;
-    
-    updateDates();
-    updateDatesFromCheckOut();
+    BookingForm.init();
 });
 </script>
 {% endblock %} 

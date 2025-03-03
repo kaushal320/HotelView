@@ -69,6 +69,12 @@
                             <span>{{ user.first_name }}</span>
                         </a>
                         <div class="navbar-dropdown">
+                            <a href="{% url 'hotel:user_bookings' %}" class="navbar-item">
+                                <span class="icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                                <span>My Bookings</span>
+                            </a>
                             <a href="{% url 'hotel:logout' %}" class="navbar-item">
                                 <span class="icon">
                                     <i class="fas fa-sign-out-alt"></i>

@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Booking Details - HotelView{% endblock %}
+
+{% block content %}
+<div class="booking-detail-section">
+    <div class="booking-detail-header">
+        <h1>Booking Details</h1>
+    </div>
+
+    <div class="booking-detail-container">
+        <div class="booking-preview">
+            <div class="room-image">
+                {% if booking.room %}
+                    <img src="{{ booking.room.image.url }}" alt="{{ booking.room.name }}">
+                {% else %}
+                    <img src="{% static 'images/default-room.jpg' %}" alt="Default Room">
+                {% endif %}
+            </div>
+            <div class="room-info">
+                <h3>{% if booking.room %}{{ booking.room.name }}{% else %}{{ booking.room_type }}{% endif %}</h3>
+                <div class="room-price">
+                    Rs. {% if booking.room %}{{ booking.room.price }}{% else %}{{ booking.total_price }}{% endif %} <span>per night</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="booking-info">
+            <div class="info-section">
+                <h2>Reservation Details</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Check-in Date</span>
+                        <span class="value">{{ booking.check_in|date:"F d, Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Check-out Date</span>
+                        <span class="value">{{ booking.check_out|date:"F d, Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Number of Nights</span>
+                        <span class="value">{{ booking.nights }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Number of Guests</span>
+                        <span class="value">{{ booking.guests }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Total Price</span>
+                        <span class="value price">Rs. {{ booking.total_price }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>Guest Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Name</span>
+                        <span class="value">{{ booking.name }} {{ booking.surname }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Email</span>
+                        <span class="value">{{ booking.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Address</span>
+                        <span class="value">{{ booking.address }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="booking-actions">
+            <a href="{% url 'hotel:user_bookings' %}" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Bookings
+            </a>
+            <div class="action-buttons">
+                <a href="{% url 'hotel:edit_booking' booking.id %}" class="edit-button">
+                    <i class="fas fa-edit"></i> Edit Booking
+                </a>
+                <a href="{% url 'hotel:delete_booking' booking.id %}" class="delete-button">
+                    <i class="fas fa-trash"></i> Cancel Booking
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.booking-detail-section {
+    padding: 80px 20px 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.booking-detail-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.booking-detail-header h1 {
+    color: #b38b59;
+    font-size: 2.5rem;
+    font-weight: 500;
+}
+
+.booking-detail-container {
+    background: #262626;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.booking-preview {
+    display: flex;
+    gap: 30px;
+    padding: 30px;
+    background: #333;
+    border-bottom: 1px solid rgba(179, 139, 89, 0.2);
+}
+
+.room-image {
+    width: 300px;
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.room-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.room-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.room-info h3 {
+    color: #b38b59;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.room-price {
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.room-price span {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.booking-info {
+    padding: 30px;
+}
+
+.info-section {
+    margin-bottom: 30px;
+}
+
+.info-section:last-child {
+    margin-bottom: 0;
+}
+
+.info-section h2 {
+    color: #b38b59;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-item .label {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.info-item .value {
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.info-item .value.price {
+    color: #b38b59;
+    font-weight: bold;
+}
+
+.booking-actions {
+    padding: 30px;
+    border-top: 1px solid rgba(179, 139, 89, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.back-button:hover {
+    color: #b38b59;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.edit-button,
+.delete-button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.edit-button {
+    background: #b38b59;
+    color: #fff;
+}
+
+.delete-button {
+    background: #dc3545;
+    color: #fff;
+}
+
+.edit-button:hover {
+    background: #96744b;
+}
+
+.delete-button:hover {
+    background: #c82333;
+}
+
+@media (max-width: 768px) {
+    .booking-preview {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .room-image {
+        width: 100%;
+        height: 200px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .action-buttons {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .edit-button,
+    .delete-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %} 
