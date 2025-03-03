@@ -14,4 +14,6 @@ urlpatterns = [
     path('booking-form/', views.booking_form, name='booking_form'),
     path('booking-confirmation/<int:booking_id>/', views.booking_confirmation, name='booking_confirmation'),
     path('room/<slug:room_slug>/', views.room_detail, name='room_detail'),
+    path('search/', views.search_rooms, name='search'),
+    path('api/search-rooms/', views.search_rooms_api, name='search_rooms_api'),
 ]
