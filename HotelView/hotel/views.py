@@ -153,11 +153,6 @@ def booking_form(request):
                 messages.error(request, f'You have already booked {room.name} 3 times. Please choose a different room type.')
                 return render(request, 'booking_form.html', context)
             
-            # Check if user has reached overall booking limit
-            if user_booking_count >= 3:
-                messages.error(request, 'You have reached the maximum limit of 3 rooms. Please complete or cancel existing bookings before making new ones.')
-                return render(request, 'booking_form.html', context)
-            
             # Get form data
             arrival = request.POST.get('arrival')
             if not arrival:
