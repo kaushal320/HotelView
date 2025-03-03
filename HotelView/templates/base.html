@@ -25,6 +25,35 @@
         </div>
     
         <div class="navbar-menu" id="nav-links">
+            <div class="navbar-start">
+                <div class="navbar-item">
+                    <div class="search-container">
+                        <form action="{% url 'hotel:search' %}" method="GET" class="search-form">
+                            <div class="field has-addons">
+                                <div class="control search-input-container">
+                                    <input 
+                                        class="input" 
+                                        type="text" 
+                                        name="q" 
+                                        id="searchInput"
+                                        placeholder="Search rooms..." 
+                                        autocomplete="off"
+                                        oninput="handleSearch(this.value)"
+                                    >
+                                    <div id="searchResults" class="search-dropdown"></div>
+                                </div>
+                                <div class="control">
+                                    <button type="submit" class="button is-primary">
+                                        <span class="icon">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="navbar-end">
                 <a href="{% url 'hotel:home' %}" class="navbar-item has-text-white">Home</a>
                 <a href="{% url 'hotel:about' %}"  class="navbar-item has-text-white">About</a>
@@ -136,6 +165,208 @@
                 });
             });
         });
+    </script>
+
+    <style>
+        .search-container {
+            position: relative;
+            min-width: 300px;
+        }
+
+        .search-input-container {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        /* Update input styling */
+        .search-input-container .input {
+            background: rgba(26, 26, 26, 0.9);
+            border: 1px solid #333;
+            color: #fff;
+            transition: all 0.3s;
+        }
+
+        .search-input-container .input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-input-container .input:focus {
+            border-color: #b38b59;
+            box-shadow: 0 0 0 1px #b38b59;
+        }
+
+        /* Update search button */
+        .search-container .button {
+            background: #b38b59;
+            border: none;
+            color: #fff;
+        }
+
+        .search-container .button:hover {
+            background: #8b6943;
+        }
+
+        /* Update dropdown styling */
+        .search-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-top: 5px;
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .search-dropdown.active {
+            display: block;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            cursor: pointer;
+            text-decoration: none;
+            border-bottom: 1px solid #333;
+            background: #1a1a1a;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .search-result-info {
+            flex-grow: 1;
+        }
+
+        .search-result-name {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .search-result-meta {
+            color: #b38b59;
+            font-size: 0.85rem;
+        }
+
+        .no-results-found {
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .no-results-found p {
+            margin-bottom: 15px;
+        }
+
+        .view-all-button {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #b38b59;  /* Theme color */
+            color: #fff;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: none;
+        }
+
+        .view-all-button:hover {
+            background: #8b6943;  /* Darker shade of theme color */
+            color: #fff;
+        }
+
+        /* Scrollbar styling */
+        .search-dropdown::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .search-dropdown::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        .search-dropdown::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        .search-dropdown::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+    </style>
+
+    <script>
+    let searchTimeout;
+
+    function handleSearch(query) {
+        clearTimeout(searchTimeout);
+        const dropdown = document.getElementById('searchResults');
+        
+        if (query.length < 1) {
+            dropdown.classList.remove('active');
+            return;
+        }
+
+        searchTimeout = setTimeout(() => {
+            fetch(`/api/search-rooms/?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    dropdown.innerHTML = '';
+                    
+                    if (data.length > 0) {
+                        data.forEach(room => {
+                            const resultItem = document.createElement('a');
+                            resultItem.href = `/room/${room.slug}/`;
+                            resultItem.className = 'search-result-item';
+                            resultItem.innerHTML = `
+                                <img src="${room.image}" alt="${room.name}" class="search-result-image">
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${room.name}</div>
+                                    <div class="search-result-meta">
+                                        Rs. ${room.price} · ${room.max_guests} Guests
+                                    </div>
+                                </div>
+                            `;
+                            dropdown.appendChild(resultItem);
+                        });
+                    } else {
+                        dropdown.innerHTML = `
+                            <div class="no-results-found">
+                                <p>No rooms found matching "${query}"</p>
+                                <a href="/book/" class="view-all-button">View All Rooms</a>
+                            </div>
+                        `;
+                    }
+                    
+                    dropdown.classList.add('active');
+                });
+        }, 300);
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('searchResults');
+        const searchInput = document.getElementById('searchInput');
+        
+        if (!searchInput.contains(e.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
     </script>
 </body>
 </html>
