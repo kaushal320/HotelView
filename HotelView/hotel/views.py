@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.templatetags.static import static
 from .models import Booking, Room, RoomFeature, UserProfile
 from datetime import datetime, timedelta, date
+from django.db.models import Q
+from django.http import JsonResponse
 
 
 
@@ -180,3 +182,38 @@ def room_detail(request, room_slug):
         'similar_rooms': similar_rooms
     }
     return render(request, 'room_detail.html', context)
+
+def search_rooms(request):
+    query = request.GET.get('q', '')
+    if query:
+        rooms = Room.objects.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query)
+        ).filter(is_available=True)
+    else:
+        rooms = Room.objects.filter(is_available=True)
+    
+    context = {
+        'rooms': rooms,
+        'query': query
+    }
+    return render(request, 'search_results.html', context)
+
+def search_rooms_api(request):
+    query = request.GET.get('q', '')
+    if query:
+        rooms = Room.objects.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query)
+        ).filter(is_available=True)[:5]  # Limit to 5 results
+        
+        results = [{
+            'name': room.name,
+            'slug': room.slug,
+            'price': str(room.price),
+            'max_guests': room.max_guests,
+            'image': room.image.url,
+        } for room in rooms]
+        
+        return JsonResponse(results, safe=False)
+    return JsonResponse([], safe=False)
