@@ -30,7 +30,7 @@
                 <div class="date-item">
                     <h3>Check-in</h3>
                     <div class="date">{{ booking.check_in|date:"l, d F Y" }}</div>
-                    <div class="time">from {{ booking.check_in|date:"g:i A" }}</div>
+                    <div class="time">at {{ booking.check_in|date:"g:i A" }}</div>
                 </div>
                 <div class="date-item">
                     <h3>Check-out</h3>
@@ -53,8 +53,23 @@
                     <span class="value">{{ booking.nights }} Night(s)</span>
                 </div>
                 <div class="detail-row">
-                    <span class="label">Total Amount</span>
-                    <span class="value price">RS. {{ booking.total_price }}/-</span>
+                    <span class="label">Total Price:</span>
+                    <span class="price">Rs. {{ booking.total_price }}</span>
+                    <small>(Base price + Rs. 500 per additional night)</small>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="label">Booking Status:</span>
+                    <span class="status-badge status-{{ booking.status }}">
+                        {{ booking.get_status_display }}
+                    </span>
+                    {% if booking.status == 'pending' %}
+                    <small>Your booking is pending admin confirmation</small>
+                    {% elif booking.status == 'confirmed' %}
+                    <small>Your booking has been confirmed!</small>
+                    {% elif booking.status == 'rejected' %}
+                    <small>Your booking was rejected. Please contact support for more information.</small>
+                    {% endif %}
                 </div>
             </div>
 
@@ -81,4 +96,29 @@
         </div>
     </div>
 </section>
+
+<style>
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    .status-pending {
+        background-color: #f0ad4e;
+        color: white;
+    }
+    .status-confirmed {
+        background-color: #5cb85c;
+        color: white;
+    }
+    .status-rejected {
+        background-color: #d9534f;
+        color: white;
+    }
+    .status-cancelled {
+        background-color: #777;
+        color: white;
+    }
+</style>
 {% endblock %} 

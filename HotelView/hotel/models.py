@@ -32,9 +32,16 @@ class Room(models.Model):
         return self.name
 
 class Booking(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('cancelled', 'Cancelled'),
+        ('rejected', 'Rejected')
+    ]
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True, blank=True)  # Allow null initially
-    room_type = models.CharField(max_length=100)  # Keep for backward compatibility
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True, blank=True)
+    room_type = models.CharField(max_length=100)
     check_in = models.DateTimeField()
     check_out = models.DateTimeField()
     guests = models.IntegerField()
@@ -45,9 +52,10 @@ class Booking(models.Model):
     email = models.EmailField()
     address = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
-        return f"{self.room.name if self.room else self.room_type} booking by {self.name} {self.surname}"
+        return f"{self.user.username}'s booking for {self.room_type}"
 
     class Meta:
         ordering = ['-created_at']

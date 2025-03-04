@@ -22,11 +22,19 @@
                 <div class="booking-details">
                     <div class="detail-item">
                         <i class="fas fa-calendar-check"></i>
-                        <span>Check-in: {{ booking.check_in|date:"F d, Y" }}</span>
+                        <span>Check-in: {{ booking.check_in|date:"F d, Y" }} at {{ booking.check_in|date:"g:i A" }}</span>
                     </div>
                     <div class="detail-item">
                         <i class="fas fa-calendar-times"></i>
                         <span>Check-out: {{ booking.check_out|date:"F d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Status: 
+                            <span class="status-badge status-{{ booking.status }}">
+                                {{ booking.get_status_display }}
+                            </span>
+                        </span>
                     </div>
                     <div class="detail-item">
                         <i class="fas fa-users"></i>
@@ -38,11 +46,11 @@
                     </div>
                 </div>
                 <div class="booking-price">
-                    <span class="price">Rs. {{ booking.total_price }}</span>
-                    <span class="status {% if booking.check_in > today %}upcoming{% else %}past{% endif %}">
-                        {% if booking.check_in > today %}Upcoming{% else %}Past{% endif %}
-                    </span>
+                    <span class="price-label">Total Price:</span>
+                    <span class="price-amount">Rs. {{ booking.total_price }}</span>
+                    <small style="padding-left: 20px;">(Base price + Rs. 500 per additional night)</small>
                 </div>
+                
                 <div class="booking-actions">
                     <a href="{% url 'hotel:booking_detail' booking.id %}" class="view-button">
                         <i class="fas fa-eye"></i> View Details
@@ -153,7 +161,13 @@
     border-bottom: 1px solid rgba(179, 139, 89, 0.2);
 }
 
-.price {
+.price-label {
+    color: #b38b59;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.price-amount {
     color: #b38b59;
     font-size: 1.2rem;
     font-weight: bold;
@@ -275,6 +289,31 @@
         width: 100%;
         justify-content: center;
     }
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 14px;
+    display: inline-block;
+    margin-left: 5px;
+}
+.status-pending {
+    background-color: #f0ad4e;
+    color: white;
+}
+.status-confirmed {
+    background-color: #5cb85c;
+    color: white;
+}
+.status-rejected {
+    background-color: #d9534f;
+    color: white;
+}
+.status-cancelled {
+    background-color: #777;
+    color: white;
 }
 </style>
 {% endblock %} 

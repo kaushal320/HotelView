@@ -13,6 +13,7 @@ from datetime import datetime, timedelta, date
 from django.db.models import Q
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
+from django.utils import timezone
 
 
 
@@ -118,7 +119,7 @@ def booking_form(request):
     room_type = request.GET.get('room_type')
     try:
         room = Room.objects.get(name=room_type)
-        room_features = room.features.all()  # Get all features for this room
+        room_features = room.features.all()
         
         # Get count of bookings for this room type by the current user
         same_room_bookings = Booking.objects.filter(
@@ -126,23 +127,19 @@ def booking_form(request):
             room=room
         ).count()
         
-        # Get total count of bookings by the current user
-        user_booking_count = Booking.objects.filter(user=request.user).count()
-        
     except Room.DoesNotExist:
         messages.error(request, 'Room not found')
         return redirect('hotel:book')
 
     context = {
-        'room': room,  # Pass the entire room object
+        'room': room,
         'room_type': room.name,
         'room_price': room.price,
         'max_guests': room.max_guests,
         'room_rating': room.rating,
-        'room_features': room_features,  # Pass the features
-        'today': date.today(),
+        'room_features': room_features,
+        'today': timezone.now().date(),
         'user': request.user,
-        'user_booking_count': user_booking_count,
         'same_room_bookings': same_room_bookings,
     }
     
@@ -193,32 +190,41 @@ def booking_form(request):
             guests = int(guests)
             nights = int(nights)
 
-            # Convert arrival string to datetime
-            check_in = datetime.strptime(arrival, '%Y-%m-%d')
-            check_out = check_in + timedelta(days=nights)
+            # Convert arrival string to datetime with timezone
+            check_in = timezone.make_aware(datetime.strptime(arrival, '%Y-%m-%d'))
+            # Add current time to check_in
+            current_time = timezone.now().time()
+            check_in = timezone.make_aware(datetime.combine(check_in.date(), current_time))
+            
+            # Set checkout time to 12:00 PM (noon)
+            check_out_date = check_in.date() + timedelta(days=nights)
+            check_out = timezone.make_aware(datetime.combine(check_out_date, datetime.strptime('12:00', '%H:%M').time()))
 
             # Validate dates
-            if check_in.date() < date.today():
+            if check_in.date() < timezone.now().date():
                 messages.error(request, 'Check-in date cannot be in the past')
                 return render(request, 'booking_form.html', context)
+
+            # Calculate total price: base price + 500 for each additional night
+            total_price = room.price + (nights - 1) * 500
 
             # Create booking
             booking = Booking.objects.create(
                 user=request.user,
-                room=room,  # Add the room object
-                room_type=room.name,  # Keep this for backward compatibility
+                room=room,
+                room_type=room.name,
                 check_in=check_in,
                 check_out=check_out,
                 guests=guests,
                 nights=nights,
-                total_price=room.price * nights,
+                total_price=total_price,
                 name=name,
                 surname=surname,
                 email=email,
                 address=address
             )
 
-            messages.success(request, 'Booking completed successfully!')
+            messages.success(request, 'Booking completed successfully! Your booking is pending admin confirmation.')
             return redirect('hotel:booking_confirmation', booking_id=booking.id)
 
         except ValueError as e:
@@ -312,17 +318,22 @@ def edit_booking(request, booking_id):
             guests = int(guests)
             nights = int(nights)
 
-            # Convert arrival string to datetime
-            check_in = datetime.strptime(arrival, '%Y-%m-%d')
-            check_out = check_in + timedelta(days=nights)
+            # Convert arrival string to datetime with timezone
+            check_in = timezone.make_aware(datetime.strptime(arrival, '%Y-%m-%d'))
+            # Keep the original check-in time
+            check_in = timezone.make_aware(datetime.combine(check_in.date(), booking.check_in.time()))
+            
+            # Set checkout time to 12:00 PM (noon)
+            check_out_date = check_in.date() + timedelta(days=nights)
+            check_out = timezone.make_aware(datetime.combine(check_out_date, datetime.strptime('12:00', '%H:%M').time()))
 
             # Validate dates
-            if check_in.date() < date.today():
+            if check_in.date() < timezone.now().date():
                 messages.error(request, 'Check-in date cannot be in the past')
                 return redirect('hotel:edit_booking', booking_id=booking_id)
 
-            # Calculate total price based on room price and nights
-            total_price = booking.room.price * nights
+            # Calculate total price: base price + 500 for each additional night
+            total_price = booking.room.price + (nights - 1) * 500
 
             # Update booking
             booking.check_in = check_in
@@ -330,9 +341,10 @@ def edit_booking(request, booking_id):
             booking.guests = guests
             booking.nights = nights
             booking.total_price = total_price
+            booking.status = 'pending'  # Reset status to pending after edit
             booking.save()
 
-            messages.success(request, 'Booking updated successfully!')
+            messages.success(request, 'Booking updated successfully! Your booking is pending admin confirmation.')
             return redirect('hotel:booking_detail', booking_id=booking.id)
 
         except ValueError as e:
@@ -345,7 +357,7 @@ def edit_booking(request, booking_id):
     context = {
         'booking': booking,
         'room': booking.room,
-        'today': date.today(),
+        'today': timezone.now().date(),
     }
     return render(request, 'edit_booking.html', context)
 
